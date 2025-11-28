@@ -28,15 +28,19 @@
         .hidden-view { display: none !important; }
 
         .modern-table th { background: #f8fafc; color: #475569; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; padding: 12px; border-bottom: 2px solid #e2e8f0; }
-        .modern-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; color: #334155; font-size: 0.875rem; }
+        .modern-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; color: #334155; font-size: 0.875rem; vertical-align: middle; }
         .modern-table tr:hover { background: #f1f5f9; }
+        
+        /* Spinner for Refresh Button */
+        .animate-spin { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="text-slate-800 h-screen overflow-hidden flex flex-col">
 
     <script>
         // KONFIGURASI URL APP SCRIPT
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEWnvKHN3BDKjffUaX0YSiiyTt_1U_or7zq72Jcipp5wVA5NHb_I85USE-pglo-V5t/exec"; 
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9g4AUZ14a0_vbAXwJob9a4lSh7bwYwUDB9ISCaiScU2PNwTOyzGNtQ8Nlt9kqayQ/exec"; 
         const ADMIN_PIN = "2025"; 
         const MAX_VIOLATIONS = 3;
     </script>
@@ -169,19 +173,42 @@
                         <div class="p-6 border-b flex justify-between items-center">
                             <h3 class="font-bold text-lg">Hasil Ujian Realtime</h3>
                             <div class="flex gap-2">
-                                <button onclick="fetchAdminData()" class="px-3 py-1.5 bg-blue-50 text-blue-600 rounded text-xs font-bold">Refresh</button>
-                                <button onclick="downloadExcel()" class="px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded text-xs font-bold">Export Excel</button>
+                                <button onclick="fetchAdminData()" id="btn-refresh" class="px-3 py-1.5 bg-blue-50 text-blue-600 rounded text-xs font-bold flex items-center gap-2 hover:bg-blue-100 transition">
+                                    <i data-feather="refresh-cw" class="w-3 h-3"></i> Refresh
+                                </button>
+                                <button onclick="downloadExcel()" class="px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded text-xs font-bold flex items-center gap-2 hover:bg-emerald-100 transition">
+                                    <i data-feather="download" class="w-3 h-3"></i> Export Excel
+                                </button>
                             </div>
                         </div>
-                        <div class="flex-grow overflow-auto p-0"><table class="w-full text-left modern-table"><thead class="sticky top-0 bg-slate-50"><tr><th>Waktu</th><th>Nama</th><th>Kelas/Jurusan</th><th>Mapel</th><th>Nilai</th><th>Status</th></tr></thead><tbody id="table-results-body"></tbody></table></div>
+                        <div class="flex-grow overflow-auto p-0">
+                            <table class="w-full text-left modern-table" id="results-table">
+                                <thead class="sticky top-0 bg-slate-50"><tr><th>Waktu</th><th>Nama</th><th>Kelas/Jurusan</th><th>Mapel</th><th>Nilai</th><th>Status</th></tr></thead>
+                                <tbody id="table-results-body"></tbody>
+                            </table>
+                        </div>
                     </div>
 
-                    <!-- Data Peserta -->
+                    <!-- Data Peserta (Enhanced CRUD) -->
                     <div id="admin-panel-students" class="admin-panel h-full flex flex-col hidden-view">
-                        <div class="p-6 border-b"><h3 class="font-bold text-lg">Daftar Peserta Ujian</h3></div>
+                        <div class="p-6 border-b flex justify-between items-center">
+                            <h3 class="font-bold text-lg">Daftar Peserta Ujian</h3>
+                            <button onclick="openStudentModal()" class="px-4 py-2 bg-blue-600 text-white rounded text-xs font-bold hover:bg-blue-700 flex items-center gap-2">
+                                <i data-feather="plus" class="w-3 h-3"></i> Tambah Peserta
+                            </button>
+                        </div>
                         <div class="flex-grow overflow-auto p-0">
                             <table class="w-full text-left modern-table">
-                                <thead class="sticky top-0 bg-slate-50"><tr><th class="w-16">Foto</th><th>Nama Siswa</th><th>Kelas</th><th>Jurusan</th><th>Status Ujian</th></tr></thead>
+                                <thead class="sticky top-0 bg-slate-50">
+                                    <tr>
+                                        <th class="w-16">Foto</th>
+                                        <th>Nama Siswa</th>
+                                        <th>Kelas</th>
+                                        <th>Jurusan</th>
+                                        <th>Status Ujian</th>
+                                        <th class="text-right">Aksi</th>
+                                    </tr>
+                                </thead>
                                 <tbody id="table-students-body"></tbody>
                             </table>
                         </div>
@@ -260,6 +287,24 @@
         </div>
     </div>
 
+    <!-- Student Editor Modal -->
+    <div id="modal-student" class="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4 hidden-view">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-md">
+            <h3 class="font-bold text-lg mb-4" id="student-modal-title">Tambah Peserta</h3>
+            <div class="space-y-3">
+                <input id="std-name" class="w-full border p-2 rounded text-sm" placeholder="Nama Lengkap">
+                <select id="std-class" class="w-full border p-2 rounded text-sm"></select>
+                <select id="std-major" class="w-full border p-2 rounded text-sm"></select>
+                <input id="std-score" type="number" class="w-full border p-2 rounded text-sm" placeholder="Nilai (Opsional)">
+            </div>
+            <div class="mt-4 flex justify-end gap-2">
+                <button onclick="closeStudentModal()" class="px-4 py-2 text-sm text-slate-500 font-bold">Batal</button>
+                <button onclick="saveStudent()" class="px-4 py-2 text-sm bg-blue-600 text-white font-bold rounded">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Question Editor & Subject Modals (Same as before) -->
     <div id="modal-question" class="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4 hidden-view">
         <div class="bg-white rounded-2xl p-6 w-full max-w-2xl h-[90vh] flex flex-col">
             <h3 class="font-bold text-lg mb-4">Edit Soal</h3>
@@ -316,6 +361,8 @@
         let config = { logo: "", classes: ["X", "XI", "XII"], majors: ["FARMASI 1", "FARMASI 2", "KEPERAWATAN 1", "KEPERAWATAN 2", "TJKT 1", "TJKT 2", "TBSM 1", "TBSM 2", "TKR"] };
         let currentQuestions=[], userAnswers={}, currentQ=0, userData={}, timer, startTime, violations=0;
         let activeTokenAdmin = null, editingQIdx = null;
+        let adminDataCache = []; // Store fetched data for local manipulation
+        let editingStudentIdx = null;
 
         async function initApp() {
             if(GOOGLE_SCRIPT_URL) {
@@ -337,8 +384,15 @@
         function updateDropdowns() {
             const cls = document.getElementById('input-kelas');
             const mjr = document.getElementById('input-jurusan');
-            cls.innerHTML = '<option value="">Pilih Kelas</option>' + config.classes.map(c => `<option>${c}</option>`).join('');
-            mjr.innerHTML = '<option value="">Pilih Jurusan</option>' + config.majors.map(m => `<option>${m}</option>`).join('');
+            const optC = '<option value="">Pilih</option>' + config.classes.map(c => `<option>${c}</option>`).join('');
+            const optM = '<option value="">Pilih</option>' + config.majors.map(m => `<option>${m}</option>`).join('');
+            
+            cls.innerHTML = optC; mjr.innerHTML = optM;
+            
+            // Update admin modals
+            document.getElementById('std-class').innerHTML = optC;
+            document.getElementById('std-major').innerHTML = optM;
+            
             document.getElementById('setting-kelas').value = config.classes.join(', ');
             document.getElementById('setting-jurusan').value = config.majors.join(', ');
             document.getElementById('setting-logo').value = config.logo;
@@ -351,6 +405,7 @@
             document.getElementById('top-nav-btn').style.display = id==='welcome' ? 'block' : 'none';
         };
 
+        // --- EXAM & Q-RENDER LOGIC (Same as before) ---
         function startQuiz() {
             const name = document.getElementById('input-nama').value;
             const cls = document.getElementById('input-kelas').value;
@@ -381,15 +436,11 @@
             document.getElementById('progress-bar').style.width = `${((currentQ+1)/currentQuestions.length)*100}%`;
 
             const mediaDiv = document.getElementById('q-media');
-            mediaDiv.innerHTML = '';
-            mediaDiv.classList.add('hidden');
+            mediaDiv.innerHTML = ''; mediaDiv.classList.add('hidden');
             if(q.media) {
                 mediaDiv.classList.remove('hidden');
-                if(q.media.match(/\.(jpeg|jpg|gif|png)$/) != null) {
-                    mediaDiv.innerHTML = `<img src="${q.media}" class="w-full h-auto">`;
-                } else if(q.media.match(/\.(mp3|wav)$/) != null) {
-                    mediaDiv.innerHTML = `<audio controls src="${q.media}" class="w-full"></audio>`;
-                }
+                if(q.media.match(/\.(jpeg|jpg|gif|png)$/) != null) mediaDiv.innerHTML = `<img src="${q.media}" class="w-full h-auto">`;
+                else if(q.media.match(/\.(mp3|wav)$/) != null) mediaDiv.innerHTML = `<audio controls src="${q.media}" class="w-full"></audio>`;
             }
 
             const cont = document.getElementById('options-container');
@@ -416,7 +467,7 @@
         }
 
         function saveAns(val, type) {
-            if(type === 'essay') { userAnswers[currentQ] = val; }
+            if(type === 'essay') userAnswers[currentQ] = val;
             else if (type === 'multi') {
                 let arr = userAnswers[currentQ] || [];
                 if(arr.includes(val)) arr = arr.filter(x => x !== val); else arr.push(val);
@@ -456,6 +507,7 @@
             document.getElementById('res-msg').textContent = forced ? "Ujian dihentikan karena pelanggaran." : "Data telah tersimpan.";
         }
 
+        // --- ADMIN ---
         function showAdminLogin() { document.getElementById('modal-login').classList.remove('hidden-view'); }
         function checkAdminPin() {
             if(document.getElementById('pin-input').value === ADMIN_PIN) {
@@ -471,6 +523,126 @@
             document.getElementById(`nav-${tab}`).classList.add('bg-blue-50', 'text-blue-600');
         }
 
+        // --- ADMIN DATA MANAGEMENT ---
+        async function fetchAdminData() {
+            const btn = document.getElementById('btn-refresh');
+            const icon = btn.querySelector('i');
+            icon.classList.add('animate-spin');
+            
+            if(!GOOGLE_SCRIPT_URL) return;
+            try {
+                const res = await fetch(GOOGLE_SCRIPT_URL);
+                const data = await res.json();
+                const students = data.students || [];
+                adminDataCache = students; // Store for local editing
+                renderAdminTables();
+            } catch(e) { console.error(e); alert("Gagal mengambil data. Periksa koneksi."); }
+            
+            icon.classList.remove('animate-spin');
+        }
+
+        function renderAdminTables() {
+            const dashBody = document.getElementById('table-results-body');
+            dashBody.innerHTML = adminDataCache.map(s => `<tr><td>${new Date(s.timestamp).toLocaleTimeString()}</td><td>${s.nama}</td><td>${s.kelas} ${s.jurusan}</td><td>${s.mapel}</td><td>${s.nilaiAkhir}</td><td>${s.nilaiAkhir>=75?'Lulus':'Remidi'}</td></tr>`).join('');
+
+            const studBody = document.getElementById('table-students-body');
+            studBody.innerHTML = adminDataCache.map((s, i) => `
+                <tr>
+                    <td><div class="h-8 w-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs">${s.nama.charAt(0).toUpperCase()}</div></td>
+                    <td>${s.nama}</td>
+                    <td>${s.kelas}</td>
+                    <td>${s.jurusan}</td>
+                    <td><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs">Selesai</span></td>
+                    <td class="text-right">
+                        <button onclick="editStudent(${i})" class="text-blue-500 hover:text-blue-700 p-1"><i data-feather="edit-2" class="w-4 h-4"></i></button>
+                        <button onclick="deleteStudent(${i})" class="text-red-500 hover:text-red-700 p-1"><i data-feather="trash" class="w-4 h-4"></i></button>
+                    </td>
+                </tr>`).join('');
+            feather.replace();
+        }
+
+        function downloadExcel() {
+            if(adminDataCache.length === 0) return alert("Tidak ada data untuk diunduh.");
+            
+            // Prepare data for export
+            const exportData = adminDataCache.map(s => ({
+                "Waktu": new Date(s.timestamp).toLocaleString(),
+                "Nama Lengkap": s.nama,
+                "Kelas": s.kelas,
+                "Jurusan": s.jurusan,
+                "Mata Pelajaran": s.mapel,
+                "Skor": s.skor,
+                "Nilai Akhir": s.nilaiAkhir,
+                "Status": s.nilaiAkhir >= 75 ? "Lulus" : "Remidi"
+            }));
+
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.json_to_sheet(exportData);
+            XLSX.utils.book_append_sheet(wb, ws, "Hasil Ujian");
+            XLSX.writeFile(wb, "Rekap_Nilai_Ujian.xlsx");
+        }
+
+        // --- STUDENT CRUD LOCAL ---
+        function openStudentModal(idx = null) {
+            editingStudentIdx = idx;
+            document.getElementById('student-modal-title').textContent = idx !== null ? "Edit Peserta" : "Tambah Peserta";
+            document.getElementById('modal-student').classList.remove('hidden-view');
+            
+            if(idx !== null) {
+                const s = adminDataCache[idx];
+                document.getElementById('std-name').value = s.nama;
+                document.getElementById('std-class').value = s.kelas;
+                document.getElementById('std-major').value = s.jurusan;
+                document.getElementById('std-score').value = s.nilaiAkhir;
+            } else {
+                document.getElementById('std-name').value = '';
+                document.getElementById('std-score').value = '';
+            }
+        }
+
+        function closeStudentModal() { document.getElementById('modal-student').classList.add('hidden-view'); }
+
+        function saveStudent() {
+            const name = document.getElementById('std-name').value;
+            const cls = document.getElementById('std-class').value;
+            const mjr = document.getElementById('std-major').value;
+            const score = document.getElementById('std-score').value || 0;
+            
+            if(!name) return alert("Nama wajib diisi");
+
+            const newRecord = {
+                timestamp: new Date().toISOString(),
+                nama: name,
+                kelas: cls,
+                jurusan: mjr,
+                mapel: "Manual Input",
+                skor: 0,
+                nilaiAkhir: parseInt(score),
+                durasi: "-",
+                pelanggaran: 0,
+                essay: ""
+            };
+
+            if(editingStudentIdx !== null) {
+                adminDataCache[editingStudentIdx] = { ...adminDataCache[editingStudentIdx], nama: name, kelas: cls, jurusan: mjr, nilaiAkhir: parseInt(score) };
+            } else {
+                adminDataCache.unshift(newRecord);
+            }
+            
+            closeStudentModal();
+            renderAdminTables();
+            // Note: Changes are local to session display unless we implement a full DB sync logic which is complex for GS-Frontend only.
+            alert("Data diperbarui di tampilan admin (Local Session)."); 
+        }
+
+        function deleteStudent(idx) {
+            if(confirm("Hapus data peserta ini dari tampilan?")) {
+                adminDataCache.splice(idx, 1);
+                renderAdminTables();
+            }
+        }
+
+        // --- Other Admin Logic (Settings & Questions) ---
         function saveLists() {
             const cList = document.getElementById('setting-kelas').value.split(',').map(s=>s.trim());
             const mList = document.getElementById('setting-jurusan').value.split(',').map(s=>s.trim());
@@ -561,40 +733,17 @@
         }
         function saveLocalDB() { localStorage.setItem('cbt_db_v4', JSON.stringify(db)); renderMapelList(); }
 
-        async function fetchAdminData() {
-            if(!GOOGLE_SCRIPT_URL) return;
-            try {
-                const res = await fetch(GOOGLE_SCRIPT_URL);
-                const data = await res.json();
-                const students = data.students || [];
-                const dashBody = document.getElementById('table-results-body');
-                dashBody.innerHTML = students.map(s => `<tr><td>${new Date(s.timestamp).toLocaleTimeString()}</td><td>${s.nama}</td><td>${s.kelas} ${s.jurusan}</td><td>${s.mapel}</td><td>${s.nilaiAkhir}</td><td>${s.nilaiAkhir>=75?'Lulus':'Remidi'}</td></tr>`).join('');
-                const studBody = document.getElementById('table-students-body');
-                studBody.innerHTML = students.map(s => `<tr><td><div class="h-8 w-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs">${s.nama.charAt(0).toUpperCase()}</div></td><td>${s.nama}</td><td>${s.kelas}</td><td>${s.jurusan}</td><td><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs">Selesai</span></td></tr>`).join('');
-            } catch(e) { console.error(e); }
-        }
-
-        // --- NEW: WORD TEMPLATE ---
         function downloadTemplateWord() {
             const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Template Soal</title></head><body>";
             const footer = "</body></html>";
-            const content = `<h2>Template Soal Ujian</h2><p>Silakan isi tabel di bawah ini. Jangan ubah header.</p><table border="1" style="border-collapse: collapse; width: 100%;"><thead><tr style="background-color: #f0f0f0;"><th>Pertanyaan</th><th>Tipe (pg/bs/multi/essay)</th><th>Opsi A</th><th>Opsi B</th><th>Opsi C</th><th>Opsi D</th><th>Opsi E</th><th>Kunci Jawaban (Angka 0-4 / Teks)</th></tr></thead><tbody><tr><td>Contoh: Apa ibukota Indonesia?</td><td>pg</td><td>Bandung</td><td>Jakarta</td><td>Surabaya</td><td>Medan</td><td>Bali</td><td>1</td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></tbody></table>`;
-            const sourceHTML = header + content + footer;
-            const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
-            const fileDownload = document.createElement("a");
-            document.body.appendChild(fileDownload);
-            fileDownload.href = source;
-            fileDownload.download = 'Template_Soal.doc';
-            fileDownload.click();
-            document.body.removeChild(fileDownload);
+            const content = `<h2>Template Soal Ujian</h2><p>Silakan isi tabel di bawah ini.</p><table border="1" style="width: 100%;"><thead><tr style="background-color: #f0f0f0;"><th>Pertanyaan</th><th>Tipe</th><th>Opsi A</th><th>Opsi B</th><th>Opsi C</th><th>Opsi D</th><th>Opsi E</th><th>Kunci</th></tr></thead><tbody><tr><td>Contoh Soal</td><td>pg</td><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>0</td></tr></tbody></table>`;
+            const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(header + content + footer);
+            const link = document.createElement("a"); link.href = source; link.download = 'Template_Soal.doc'; link.click();
         }
-
         function downloadTemplate() {
             const wb = XLSX.utils.book_new();
-            const ws_data = [["Pertanyaan", "Tipe (pg/bs/multi/essay)", "Opsi A", "Opsi B", "Opsi C", "Opsi D", "Opsi E", "Kunci Jawaban (Index 0-4)", "Media URL"]];
-            const ws = XLSX.utils.aoa_to_sheet(ws_data);
-            XLSX.utils.book_append_sheet(wb, ws, "Template Soal");
-            XLSX.writeFile(wb, "template_soal_cbt.xlsx");
+            const ws = XLSX.utils.aoa_to_sheet([["Pertanyaan", "Tipe", "Opsi A", "Opsi B", "Opsi C", "Opsi D", "Opsi E", "Kunci"]]);
+            XLSX.utils.book_append_sheet(wb, ws, "Template"); XLSX.writeFile(wb, "template.xlsx");
         }
         function startTimer() { timer = setInterval(() => { const diff = new Date() - startTime; const m = Math.floor(diff/60000).toString().padStart(2,'0'); const s = Math.floor((diff%60000)/1000).toString().padStart(2,'0'); document.getElementById('timer-display').textContent = `${m}:${s}`; }, 1000); }
         function initSecurity() { document.addEventListener('visibilitychange', () => violations++); window.addEventListener('blur', () => violations++); setInterval(() => { if(violations >= MAX_VIOLATIONS) finishQuiz(true); }, 1000); }
