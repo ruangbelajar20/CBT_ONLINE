@@ -124,11 +124,11 @@
         .exam-card-label { width: 45px; font-weight: bold; }
         .exam-card-val { flex: 1; font-weight: bold; }
         
-        /* PRINT OPTIMIZATION (Fixed Grid, No Margin, Portrait) */
+        /* PRINT OPTIMIZATION (Fixed A4 Portrait Grid) */
         @media print {
             @page { 
                 size: A4 portrait; 
-                margin: 0; 
+                margin: 0; /* Hapus margin default browser */
             }
             body { margin: 0; padding: 0; background: white; }
             body * { visibility: hidden; }
@@ -139,26 +139,29 @@
                 position: absolute; 
                 left: 0; 
                 top: 0; 
-                width: 100%; 
+                width: 210mm; /* Lebar A4 Fix */
                 display: grid;
-                /* Layout 3 kolom fix 6cm */
+                /* 3 Kolom x 6cm = 18cm. Sisa 3cm untuk margin kiri kanan & gap */
                 grid-template-columns: repeat(3, 6cm); 
                 grid-auto-rows: 4cm;
-                column-gap: 0.5cm; 
-                row-gap: 0.5cm; 
+                column-gap: 5mm; /* Jarak antar kartu horizontal */
+                row-gap: 5mm;    /* Jarak antar kartu vertikal */
                 
-                /* Posisikan agak ke kiri dengan padding */
+                /* Alignment: Mulai dari kiri dengan padding spesifik */
                 justify-content: start;
-                padding-left: 1.5cm; /* Jarak dari kiri kertas */
-                padding-top: 1.5cm;  /* Jarak dari atas kertas */
+                align-content: start;
+                padding-left: 10mm; /* Margin Kiri 1cm */
+                padding-top: 10mm;  /* Margin Atas 1cm */
             }
             
             .exam-card { 
                 visibility: visible;
                 margin: 0; 
                 border: 1px solid #000; 
+                break-inside: avoid;
                 page-break-inside: avoid;
                 background-image: none !important;
+                box-shadow: none !important;
             }
             button, input, textarea, select, .no-print, #global-dropdown { display: none !important; }
         }
@@ -860,31 +863,6 @@
             });
         }
         
-        function updatePrintSettings() {
-            const orientation = document.getElementById('print-orientation').value;
-            const margin = document.getElementById('print-margin').value;
-            
-            const styleId = 'dynamic-print-style';
-            let styleEl = document.getElementById(styleId);
-            if (!styleEl) {
-                styleEl = document.createElement('style');
-                styleEl.id = styleId;
-                document.head.appendChild(styleEl);
-            }
-            
-            styleEl.innerHTML = `
-                @media print {
-                    @page { 
-                        size: A4 ${orientation}; 
-                        margin: ${margin}; 
-                    }
-                    #card-preview-area {
-                        grid-template-columns: repeat(${orientation === 'landscape' ? 4 : 3}, 6cm); 
-                    }
-                }
-            `;
-        }
-
         // ... (Keep existing updateDropdowns, updateDashboardStats, startTokenTimer, saveTokenSettings, showAddStudent logic etc.) ...
         
         // --- REST OF THE CODE (Reuse existing logic for other parts) ---
