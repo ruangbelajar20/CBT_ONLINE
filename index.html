@@ -162,7 +162,7 @@
                                     <div class="flex flex-col sm:flex-row items-start sm:items-center gap-8 relative z-10"><div class="pr-8 border-r border-slate-100"><p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">SOCKET</p><p class="text-4xl font-black text-blue-600" id="stat-socket">860</p></div><div><p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">HTTP REQUESTS</p><div class="flex items-baseline gap-2"><p class="text-4xl font-black text-indigo-600" id="stat-http">11,268</p><span class="text-xs text-slate-400 font-medium">Total Hits</span></div></div></div>
                                 </div>
                                 <div class="dash-card flex flex-col justify-between relative overflow-hidden bg-white border border-slate-200 p-6 rounded-xl shadow-sm">
-                                    <div><div class="flex justify-between items-start"><p class="text-xs font-bold text-slate-400 uppercase tracking-wider">TOKEN UJIAN</p><div class="w-6 h-6 rounded-full border-2 border-blue-100 border-t-blue-500 animate-spin"></div></div><h3 class="text-4xl font-black text-slate-800 tracking-wider mt-2 mb-1 font-mono" id="dash-token">D5YNRG</h3><p class="text-xs text-slate-500 font-medium">Masa aktif <span class="text-blue-600 font-bold">1:12:10</span></p></div>
+                                    <div><div class="flex justify-between items-start"><p class="text-xs font-bold text-slate-400 uppercase tracking-wider">TOKEN UJIAN</p><div class="w-6 h-6 rounded-full border-2 border-blue-100 border-t-blue-500 animate-spin"></div></div><h3 class="text-4xl font-black text-slate-800 tracking-wider mt-2 mb-1 font-mono" id="dash-token">D5YNRG</h3><p class="text-xs text-slate-500 font-medium">Masa aktif <span class="text-blue-600 font-bold" id="token-timer-display">1:12:10</span></p></div>
                                     <button onclick="generateNewToken()" class="mt-6 w-full bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold py-3 rounded-xl shadow-lg shadow-emerald-100 flex items-center justify-center gap-2"><i data-feather="refresh-cw" class="w-4 h-4"></i> Perbaharui Token</button>
                                 </div>
                             </div>
@@ -189,7 +189,7 @@
                                 <!-- Settings Content -->
                                 <div class="flex-grow bg-white rounded-2xl border border-slate-200 shadow-sm p-8 overflow-y-auto">
                                     
-                                    <!-- 1. TAB PROFIL SAYA -->
+                                    <!-- 1. PROFIL SAYA -->
                                     <div id="set-content-profile" class="settings-content hidden-view">
                                         <div class="flex flex-col items-center mb-8">
                                             <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" class="h-24 w-24 rounded-full bg-slate-100 border-4 border-white shadow-lg mb-4">
@@ -220,9 +220,36 @@
                                         </div>
                                     </div>
 
-                                    <!-- 2. TAB LISENSI (NEW) -->
+                                    <!-- 2. TOKEN SYSTEM -->
+                                    <div id="set-content-token" class="settings-content hidden-view">
+                                        <div class="mb-8">
+                                            <h3 class="text-4xl font-black text-slate-800 tracking-wider mb-1 font-mono" id="setting-token-display">NOFDTI</h3>
+                                            <p class="text-sm text-slate-500 font-medium">Masa hidup token <span class="text-blue-600 font-bold" id="token-timer-settings">1:44:19</span></p>
+                                            <button onclick="generateNewToken()" class="mt-4 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold py-2 px-4 rounded-lg transition shadow-md">Perbaharui Token!</button>
+                                        </div>
+                                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-6">
+                                            <p class="text-sm text-slate-600 mb-6 leading-relaxed">Token digunakan untuk melakukan konfirmasi peserta terhadap pengelola ujian. Nonaktifkan menggunakan token ujian jika tidak diperlukan.</p>
+                                            <div class="flex items-center justify-between mb-6">
+                                                <label class="text-sm font-bold text-slate-700">Gunakan Token?</label>
+                                                <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+                                                    <input type="checkbox" id="toggle-token" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-slate-300 checked:right-0 checked:border-blue-600"/>
+                                                    <label for="toggle-token" class="toggle-label block overflow-hidden h-6 rounded-full bg-slate-300 cursor-pointer"></label>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center justify-between mb-6">
+                                                <label class="text-sm font-bold text-slate-700">Masa Hidup (menit)</label>
+                                                <input type="number" id="token-duration" class="w-24 border border-slate-300 rounded-lg p-2 text-center text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none" value="105">
+                                            </div>
+                                            <div class="text-right">
+                                                <button onclick="updateTokenSettings()" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold text-sm hover:bg-blue-700 shadow-lg shadow-blue-200 transition flex items-center gap-2 ml-auto"><i data-feather="save" class="w-4 h-4"></i> Simpan</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 3. LISENSI -->
                                     <div id="set-content-license" class="settings-content hidden-view">
                                         <h4 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-4 mb-6">Lisensi Aplikasi</h4>
+                                        <p class="text-sm text-slate-500 mb-6">Kelola dan tinjau status lisensi anda.</p>
                                         <div class="space-y-4 max-w-3xl">
                                             <div class="flex flex-col sm:flex-row gap-4 items-center bg-slate-50 p-4 rounded-lg border border-slate-100">
                                                 <span class="text-sm font-bold text-slate-500 w-48">Nomor Serial</span>
@@ -237,12 +264,12 @@
                                                 <div class="flex justify-between sm:block"><span class="text-sm font-bold text-slate-500">Masa Aktif</span><p class="text-sm font-bold text-emerald-600 mt-1">Unlimited</p></div>
                                             </div>
                                             <div class="pt-6 text-right border-t border-slate-100 mt-6">
-                                                <button class="bg-blue-600 text-white px-6 py-2.5 rounded-lg font-bold text-sm hover:bg-blue-700 shadow-lg shadow-blue-200 transition">Update Serial Number</button>
+                                                <button onclick="document.getElementById('modal-license-update').classList.remove('hidden-view')" class="bg-blue-600 text-white px-6 py-2.5 rounded-lg font-bold text-sm hover:bg-blue-700 shadow-lg shadow-blue-200 transition">Update Serial Number</button>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <!-- 3. TAB LAINNYA (MERGED: LOGO + SCHOOL + RULES) -->
+                                    <!-- 4. TAB LAINNYA (MERGED) -->
                                     <div id="set-content-others" class="settings-content hidden-view">
                                         <!-- Logo Section -->
                                         <div class="mb-10">
@@ -255,7 +282,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                         <!-- School Info Section -->
                                         <div class="mb-10">
                                             <h4 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-4 mb-6">Informasi Sekolah</h4>
@@ -265,7 +291,6 @@
                                                 <button onclick="saveSchoolInfo()" class="bg-slate-800 text-white px-6 py-2 rounded-lg text-sm font-bold">Simpan Info</button>
                                             </div>
                                         </div>
-
                                         <!-- Rules Section -->
                                         <div>
                                             <h4 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-4 mb-6">Panduan & Tata Tertib</h4>
@@ -275,7 +300,7 @@
                                         </div>
                                     </div>
 
-                                    <!-- 4. TAB TENTANG -->
+                                    <!-- 5. TENTANG -->
                                     <div id="set-content-about" class="settings-content hidden-view text-center py-10">
                                         <div class="mb-6"><div class="h-20 w-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mx-auto flex items-center justify-center text-white shadow-xl shadow-blue-200"><i data-feather="command" class="w-10 h-10"></i></div></div>
                                         <h2 class="text-2xl font-extrabold text-slate-800 mb-1">My Exams</h2>
@@ -285,15 +310,14 @@
                                             <a href="#" class="p-3 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200 transition"><i data-feather="send" class="w-5 h-5"></i></a>
                                         </div>
                                     </div>
-
+                                    
                                     <!-- Placeholders -->
-                                    <div id="set-content-token" class="settings-content hidden-view text-center text-slate-400 py-20">Pengaturan Token Lanjutan.</div>
                                     <div id="set-content-access" class="settings-content hidden-view text-center text-slate-400 py-20">Manajemen Akses User.</div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Other Panels (Students, Questions) -->
+                        <!-- Other Panels -->
                         <div id="admin-panel-students" class="admin-panel hidden-view"><div class="flex justify-between bg-white p-6 rounded-xl shadow-sm border mb-4"><h3 class="font-bold text-lg text-slate-700">Daftar Peserta</h3><button onclick="openStudentModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold">+ Tambah</button></div><div class="bg-white rounded-xl border border-slate-200 overflow-hidden"><table class="w-full text-left"><thead class="bg-slate-50 text-xs font-bold text-slate-500 uppercase border-b"><tr><th class="px-6 py-3">Foto</th><th class="px-6 py-3">Nama</th><th class="px-6 py-3">Kelas</th><th class="px-6 py-3 text-right">Aksi</th></tr></thead><tbody id="table-students-body"></tbody></table></div></div>
                         <div id="admin-panel-questions" class="admin-panel hidden-view"><div class="bg-white p-6 rounded-xl border border-slate-200 h-full flex flex-col shadow-sm"><div class="flex justify-between items-center mb-6"><div><h3 class="font-bold text-xl text-slate-800">Bank Soal</h3></div><div class="flex gap-2"><button onclick="downloadTemplateWord()" class="border px-4 py-2 rounded-lg text-xs font-bold">Template Word</button><button onclick="openAddSubject()" class="bg-slate-800 text-white px-4 py-2 rounded-lg text-xs font-bold">+ Mapel</button></div></div><div class="flex-grow flex gap-4 overflow-hidden"><div class="w-64 bg-slate-50 border rounded-xl p-4 overflow-y-auto custom-scrollbar" id="mapel-list"></div><div class="flex-grow border rounded-xl flex flex-col overflow-hidden relative"><div id="soal-header" class="p-4 border-b flex justify-between items-center bg-white hidden z-10 shadow-sm"><h4 class="font-bold text-blue-700 text-lg" id="active-mapel-title">Mapel</h4><button onclick="openAddQuestion()" class="text-xs bg-indigo-600 text-white px-3 py-2 rounded-lg font-bold">+ Soal</button></div><div id="soal-list" class="flex-grow overflow-y-auto p-6 space-y-4 bg-slate-50/30 custom-scrollbar relative"></div></div></div></div></div>
                     </div>
@@ -313,6 +337,30 @@
 
     <!-- MODALS -->
     <div id="modal-login" class="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4 hidden-view backdrop-blur-sm"><div class="bg-white p-8 rounded-2xl shadow-2xl w-80 text-center"><h3 class="font-bold text-lg mb-6">Admin Login</h3><input type="password" id="pin-input" class="w-full text-center text-3xl font-bold tracking-widest border-b-2 py-2 outline-none mb-8" maxlength="4"><div class="flex gap-2"><button onclick="document.getElementById('modal-login').classList.add('hidden-view')" class="flex-1 py-2 bg-slate-100 rounded font-bold text-slate-500">Batal</button><button onclick="checkAdminPin()" class="flex-1 py-2 bg-blue-600 text-white rounded font-bold">Masuk</button></div></div></div>
+    
+    <!-- LICENSE UPDATE MODAL -->
+    <div id="modal-license-update" class="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4 hidden-view backdrop-blur-sm">
+        <div class="bg-white rounded-2xl p-8 w-full max-w-2xl shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-xl text-slate-800">Update Serial Number</h3>
+                <button onclick="document.getElementById('modal-license-update').classList.add('hidden-view')" class="text-slate-400 hover:text-red-500"><i data-feather="x"></i></button>
+            </div>
+            <p class="text-sm text-slate-500 mb-6 leading-relaxed">Serial number dibuat dan diterbitkan oleh pihak pengembang aplikasi. Jika anda belum memiliki serial number, silakan hubungi pihak pengembang aplikasi.</p>
+            <div class="bg-slate-100 border border-slate-200 rounded-lg p-4 mb-6">
+                <p class="text-center font-bold text-slate-600 mb-2">Application Key!</p>
+                <textarea readonly class="w-full bg-white border border-slate-200 rounded p-2 text-xs font-mono text-slate-500 h-24 resize-none outline-none" onclick="this.select()">U2FsdGVkX1+u273DuZuhJX8O9c2/juxzMGZxdDQkcoVa6TN9kwMKnCU6nGdgEkxTH1mitoJRuFM6HeZ3sDzo76BW3ZQJuQwd9s0ep2fq7KTNnEBmT3rhO0+mW9xNvccyGnj8RRzAquyPY9YHHXhpfrqQHOtshKtSNqN90SJ6sRN1ytP/+VnSSJ5wODWtXt39K5VkPvkKbrWfSqONU6PM1tRj1h1/FDWDETGjzsTbaxZGtwsDrdJVLePOYW59GBtsXM7prfYR7fRer4c3fsP81dWwFjntpBbbs5YaEae92bBXB1DfXCNMN...V3F7RnL</textarea>
+            </div>
+            <div class="mb-6">
+                <label class="block text-sm font-bold text-slate-700 mb-2">Serial Number:</label>
+                <textarea id="input-serial" class="w-full border border-slate-300 rounded-lg p-3 text-sm h-24 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Masukan serial number!"></textarea>
+            </div>
+            <div class="flex justify-end gap-2">
+                <button onclick="document.getElementById('modal-license-update').classList.add('hidden-view')" class="px-4 py-2 bg-slate-100 text-slate-600 font-bold rounded-lg hover:bg-slate-200">Tutup</button>
+                <button onclick="alert('Serial Number Berhasil Diupdate!')" class="px-4 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700">Update dan Verifikasi</button>
+            </div>
+        </div>
+    </div>
+
     <div id="modal-student" class="fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center hidden-view"><div class="bg-white p-6 rounded-xl w-96"><h3 class="font-bold mb-4" id="student-modal-title">Peserta</h3><div class="space-y-3"><input id="std-name" class="w-full border p-2 rounded" placeholder="Nama"><select id="std-class" class="w-full border p-2 rounded"></select><select id="std-major" class="w-full border p-2 rounded"></select><input id="std-score" type="number" class="w-full border p-2 rounded" placeholder="Nilai"></div><div class="mt-4 flex justify-end gap-2"><button onclick="closeStudentModal()" class="px-4 py-2 text-slate-500">Batal</button><button onclick="saveStudent()" class="px-4 py-2 bg-blue-600 text-white rounded">Simpan</button></div></div></div>
     <div id="modal-question" class="fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center hidden-view"><div class="bg-white p-6 rounded-xl w-[600px] h-[80vh] flex flex-col"><textarea id="ed-q" class="w-full border p-3 rounded-xl h-24 mb-3 text-sm" placeholder="Pertanyaan"></textarea><div id="ed-opts-container" class="flex-grow overflow-y-auto space-y-2"></div><button onclick="addEditorOpt()" class="text-blue-600 text-sm font-bold mt-2 mb-4">+ Opsi</button><input id="ed-type" type="hidden"><input id="ed-media" type="hidden"><div class="pt-4 border-t flex justify-end gap-2"><button onclick="document.getElementById('modal-question').classList.add('hidden-view')" class="px-4 py-2 text-slate-500 font-bold">Batal</button><button onclick="saveQuestion()" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-bold">Simpan</button></div></div></div>
     <div id="modal-subject" class="fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center hidden-view"><div class="bg-white p-6 rounded w-80"><input id="new-token" class="w-full border p-2 mb-2 uppercase" placeholder="TOKEN"><input id="new-mapel" class="w-full border p-2 mb-4" placeholder="Mapel"><button onclick="saveNewSubject()" class="w-full bg-blue-600 text-white py-2 rounded font-bold">Simpan</button><button onclick="document.getElementById('modal-subject').classList.add('hidden-view')" class="w-full mt-2 text-slate-500">Batal</button></div></div>
@@ -320,12 +368,23 @@
     <script>
         feather.replace();
         let db = JSON.parse(localStorage.getItem('cbt_db_v4') || '{}');
-        let config = { logo: "", classes: ["X", "XI", "XII"], majors: ["FARMASI 1", "FARMASI 2", "KEPERAWATAN 1", "KEPERAWATAN 2", "TJKT 1", "TJKT 2", "TBSM 1", "TBSM 2", "TKR"] };
+        let config = { logo: "", classes: ["X", "XI", "XII"], majors: ["FARMASI 1", "FARMASI 2", "KEPERAWATAN 1", "KEPERAWATAN 2", "TJKT 1", "TJKT 2", "TBSM 1", "TBSM 2", "TKR"], tokenDuration: 105 };
         let adminDataCache = [], editingStudentIdx = null, activeTokenAdmin = null, editingQIdx = null;
         
         function init() {
             updateDropdowns();
-            if(localStorage.getItem('cbt_token_dash')) document.getElementById('dash-token').textContent = localStorage.getItem('cbt_token_dash');
+            // Token Init
+            const savedToken = localStorage.getItem('cbt_token_dash');
+            if(savedToken) document.getElementById('dash-token').textContent = savedToken;
+            document.getElementById('setting-token-display').textContent = savedToken || "NOFDTI"; // Display in settings
+
+            const tokenDur = localStorage.getItem('cbt_token_duration');
+            if(tokenDur) { 
+                config.tokenDuration = parseInt(tokenDur);
+                document.getElementById('token-duration').value = config.tokenDuration;
+            }
+            startTokenTimer();
+
             const savedLogo = localStorage.getItem('school_logo_url_base64');
             if(savedLogo) applyLogo(savedLogo);
             setInterval(() => { const now = new Date(); document.getElementById('digital-clock').textContent = now.toLocaleTimeString(); }, 1000);
@@ -337,6 +396,41 @@
             }
         }
         init();
+
+        // --- TOKEN LOGIC ---
+        let tokenInterval;
+        function startTokenTimer() {
+            const totalSecs = config.tokenDuration * 60;
+            let elapsed = 0;
+            clearInterval(tokenInterval);
+            tokenInterval = setInterval(() => {
+                elapsed++;
+                const remaining = totalSecs - elapsed;
+                if(remaining <= 0) {
+                     const expText = "Expired";
+                     document.getElementById('token-timer-display').textContent = expText; // In settings
+                     if(document.getElementById('token-timer-settings')) document.getElementById('token-timer-settings').textContent = expText;
+                     return;
+                }
+                const h = Math.floor(remaining / 3600);
+                const m = Math.floor((remaining % 3600) / 60);
+                const s = remaining % 60;
+                const timeStr = `${h}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                
+                // Update both displays if they exist
+                if(document.getElementById('token-timer-display')) document.getElementById('token-timer-display').textContent = timeStr;
+                if(document.getElementById('token-timer-settings')) document.getElementById('token-timer-settings').textContent = timeStr;
+                
+            }, 1000);
+        }
+
+        function updateTokenSettings() {
+            const dur = document.getElementById('token-duration').value;
+            localStorage.setItem('cbt_token_duration', dur);
+            config.tokenDuration = parseInt(dur);
+            alert("Pengaturan Token Disimpan!");
+            startTokenTimer(); 
+        }
 
         function updateDropdowns() {
             const optsC = '<option value="">Pilih</option>' + config.classes.map(c => `<option>${c}</option>`).join('');
@@ -418,8 +512,22 @@
 
         // --- DASHBOARD ---
         function updateDashboardStats() { document.getElementById('stat-total-students').textContent = adminDataCache.length; document.getElementById('stat-total-exams').textContent = Object.keys(db).length; }
-        function generateNewToken() { const chars = "ABCDEF0123456789"; let result = ""; for(let i=0; i<6; i++) result += chars.charAt(Math.floor(Math.random() * chars.length)); document.getElementById('dash-token').textContent = result; localStorage.setItem('cbt_token_dash', result); }
-        function resetTrafficStats() { document.getElementById('stat-socket').textContent='0'; document.getElementById('stat-http').textContent='0'; }
+        function generateNewToken() { 
+            const chars = "ABCDEF0123456789"; 
+            let result = ""; for(let i=0; i<6; i++) result += chars.charAt(Math.floor(Math.random() * chars.length)); 
+            
+            document.getElementById('dash-token').textContent = result; 
+            document.getElementById('setting-token-display').textContent = result; // Update settings display too
+            localStorage.setItem('cbt_token_dash', result); 
+            
+            // Reset Timer
+            startTokenTimer();
+        }
+        function resetTrafficStats() { 
+            document.getElementById('stat-socket').textContent='0'; document.getElementById('stat-http').textContent='0'; 
+            document.getElementById('stat-socket').classList.add('animate-pulse');
+            setTimeout(() => document.getElementById('stat-socket').classList.remove('animate-pulse'), 500);
+        }
 
         // --- DATA ---
         async function fetchAdminData() {
