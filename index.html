@@ -57,54 +57,77 @@
         .editor-content-area u { text-decoration: underline; }
         .editor-content-area img { max-width: 100%; height: auto; border-radius: 8px; margin: 10px 0; }
 
-        /* Card Print Style (Optimized for A4) */
+        /* --- EXAM CARD ID SIZE (8.5cm x 5.4cm) --- */
         .exam-card { 
-            width: 100%; 
-            border: 2px solid #000; 
-            padding: 15px; 
+            width: 8.5cm; 
+            height: 5.4cm; 
+            border: 1px solid #000; 
+            padding: 5px; 
             background: white; 
-            font-family: 'Times New Roman', serif; 
+            font-family: 'Times New Roman', serif; /* Font Serif agar formal */
             margin-bottom: 20px; 
-            page-break-inside: avoid; /* Mencegah kartu terpotong */
             box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+            background-image: radial-gradient(#f0f0f0 1px, transparent 1px);
+            background-size: 10px 10px; /* Watermark pattern effect */
         }
+        
         .exam-card-header { 
             display: flex; 
-            border-bottom: 3px double #000; 
-            padding-bottom: 10px; 
-            margin-bottom: 10px; 
+            border-bottom: 2px double #000; 
+            padding-bottom: 3px; 
+            margin-bottom: 4px; 
             align-items: center; 
-            justify-content: center; 
-            text-align: center; 
+            justify-content: center;
         }
-        .exam-card-logo { width: 60px; height: 60px; object-fit: contain; margin-right: 15px; }
-        .exam-card-title { font-weight: bold; font-size: 16px; text-align: center; margin-bottom: 5px; text-transform: uppercase; text-decoration: underline; }
-        .exam-card-subtitle { font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 15px; text-transform: uppercase; }
-        .exam-card-row { display: flex; margin-bottom: 6px; font-size: 13px; font-weight: bold; }
-        .exam-card-label { width: 130px; }
-        .exam-card-val { flex: 1; }
+        .exam-card-logo { width: 35px; height: 35px; object-fit: contain; margin-right: 5px; }
+        .exam-card-header-text { flex: 1; text-align: center; line-height: 1; }
+        .exam-card-h1 { font-size: 8px; font-weight: bold; margin-bottom: 2px; }
+        .exam-card-h2 { font-size: 9px; font-weight: bold; margin-bottom: 2px; }
+        .exam-card-h3 { font-size: 6px; }
+        
+        .exam-card-body { padding: 0 2px; }
+        .exam-card-title { font-weight: bold; font-size: 10px; text-align: center; margin-bottom: 1px; text-transform: uppercase; text-decoration: underline; }
+        .exam-card-subtitle { font-weight: bold; font-size: 7px; text-align: center; margin-bottom: 6px; text-transform: uppercase; }
+        
+        .exam-card-row { display: flex; margin-bottom: 2px; font-size: 9px; line-height: 1.1; }
+        .exam-card-label { width: 70px; font-weight: bold; }
+        .exam-card-val { flex: 1; font-weight: bold; }
         
         @media print {
-            @page { size: A4; margin: 10mm; }
+            @page { 
+                size: A4; 
+                margin: 0; /* NO MARGIN */
+            }
+            body { 
+                margin: 0; 
+                padding: 0; 
+                background: white;
+            }
             body * { visibility: hidden; }
+            
             #card-preview-area, #card-preview-area * { visibility: visible; }
             #card-preview-area { 
                 position: absolute; 
-                left: 0; 
-                top: 0; 
-                width: 100%; 
-                display: grid;
-                grid-template-columns: 1fr 1fr; /* 2 Kolom untuk hemat kertas */
-                gap: 15px;
+                left: 10mm; /* Sedikit padding agar tidak terpotong printer */
+                top: 10mm; 
+                width: 190mm; /* Area aman A4 (210-20) */
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5mm; /* Jarak antar kartu */
+                justify-content: flex-start;
             }
+            
             .exam-card { 
+                visibility: visible;
                 margin: 0; 
                 border: 1px solid #000; 
-                width: 100%;
-                max-width: none;
+                page-break-inside: avoid;
             }
-            /* Hilangkan elemen yang tidak perlu saat print */
-            button { display: none; }
+            
+            /* Hide Buttons */
+            button, input, textarea, .no-print { display: none !important; }
         }
     </style>
 </head>
@@ -757,20 +780,22 @@
                 card.innerHTML = `
                     <div class="exam-card-header">
                         <img src="${logoSrc}" class="exam-card-logo">
-                        <div style="flex-grow:1">
-                            <div style="font-size:16px; font-weight:bold">${txtH1}</div>
-                            <div style="font-size:18px; font-weight:bold; margin: 4px 0;">${txtH2}</div>
-                            <div style="font-size:12px">${txtH3}</div>
+                        <div class="exam-card-header-text">
+                            <div class="exam-card-h1">${txtH1}</div>
+                            <div class="exam-card-h2">${txtH2}</div>
+                            <div class="exam-card-h3">${txtH3}</div>
                         </div>
                     </div>
-                    <div class="exam-card-title">${txtTitle}</div>
-                    <div class="exam-card-subtitle">${txtSubtitle}</div>
-                    <div class="exam-card-row"><div class="exam-card-label">Nama Peserta</div><div class="exam-card-val">: ${s.nama}</div></div>
-                    <div class="exam-card-row"><div class="exam-card-label">Nomor Peserta</div><div class="exam-card-val">: ${s.id_peserta || '-'}</div></div>
-                    <div class="exam-card-row"><div class="exam-card-label">Kelas / Jurusan</div><div class="exam-card-val">: ${s.kelas || '-'}</div></div>
-                    <div class="exam-card-row"><div class="exam-card-label">Ruang Ujian</div><div class="exam-card-val">: ${s.ruangan || '-'}</div></div>
-                    <div class="exam-card-row"><div class="exam-card-label">Username</div><div class="exam-card-val">: ${s.username || '-'}</div></div>
-                    <div class="exam-card-row"><div class="exam-card-label">Password</div><div class="exam-card-val">: ${s.password || '-'}</div></div>
+                    <div class="exam-card-body">
+                        <div class="exam-card-title">${txtTitle}</div>
+                        <div class="exam-card-subtitle">${txtSubtitle}</div>
+                        <div class="exam-card-row"><div class="exam-card-label">Nama</div><div class="exam-card-val">: ${s.nama}</div></div>
+                        <div class="exam-card-row"><div class="exam-card-label">ID</div><div class="exam-card-val">: ${s.id_peserta || '-'}</div></div>
+                        <div class="exam-card-row"><div class="exam-card-label">Kelas</div><div class="exam-card-val">: ${s.kelas || '-'}</div></div>
+                        <div class="exam-card-row"><div class="exam-card-label">Ruang</div><div class="exam-card-val">: ${s.ruangan || '-'}</div></div>
+                        <div class="exam-card-row"><div class="exam-card-label">User</div><div class="exam-card-val">: ${s.username || '-'}</div></div>
+                        <div class="exam-card-row"><div class="exam-card-label">Pass</div><div class="exam-card-val">: ${s.password || '-'}</div></div>
+                    </div>
                 `;
                 container.appendChild(card);
             });
