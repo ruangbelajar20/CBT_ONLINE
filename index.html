@@ -110,7 +110,7 @@
         .exam-card-label { width: 40px; font-weight: bold; }
         .exam-card-val { flex: 1; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        /* --- PRINT OPTIMIZATION (3 Cols x 6 Rows - CENTERED) --- */
+        /* --- PRINT OPTIMIZATION (3 Cols x 6 Rows - CENTERED & SAFE) --- */
         @media print {
             @page { 
                 size: A4 portrait; 
@@ -131,18 +131,20 @@
                 display: grid;
                 /* 3 Kolom @ 6cm = 18cm. Sisa 3cm. */
                 grid-template-columns: repeat(3, 6cm); 
+                
+                /* Baris otomatis 4cm */
                 grid-auto-rows: 4cm;
                 
-                /* Gap 5mm antar kartu */
+                /* Gap 5mm antar kartu horizontal & vertikal */
                 column-gap: 5mm; 
                 row-gap: 5mm;
                 
-                /* PENTING: Center Horizontal */
+                /* CENTER Alignment */
                 justify-content: center;
                 align-content: start;
                 
-                /* Margin Atas */
-                padding-top: 10mm; 
+                /* Padding Atas Aman */
+                padding-top: 15mm; 
             }
             
             .exam-card { 
@@ -352,7 +354,7 @@
                                     <table class="w-full text-left modern-table relative">
                                         <thead class="bg-slate-50 text-xs font-bold text-slate-500 uppercase border-b sticky top-0 z-20">
                                             <tr>
-                                                <!-- Check All Feature -->
+                                                <!-- FIX: Check All Functionality -->
                                                 <th class="px-4 py-3"><input type="checkbox" id="select-all-students" onclick="toggleAllCheckboxes(this)"></th>
                                                 <th class="px-4 py-3 text-center">Aksi</th>
                                                 <th class="px-4 py-3">#</th>
