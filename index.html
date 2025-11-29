@@ -258,10 +258,53 @@
                                             <h4 class="text-lg font-bold text-slate-800 mb-4">Logo Aplikasi</h4>
                                             <div class="flex gap-6 items-start"><div class="h-20 w-20 bg-white border rounded-xl flex items-center justify-center overflow-hidden shadow-sm"><img id="preview-logo-upload" src="" class="h-full w-full object-contain hidden"><i data-feather="image" class="text-slate-300" id="preview-logo-placeholder"></i></div><div class="flex-grow"><div class="flex border rounded-lg overflow-hidden mb-2"><label class="bg-slate-50 border-r px-4 py-2 text-sm font-bold text-slate-600 cursor-pointer hover:bg-slate-100">Upload <input type="file" class="hidden" accept="image/*" onchange="handleLogoUpload(this)"></label><input class="flex-grow px-4 text-sm text-slate-500 bg-white" placeholder="No file" id="filename-logo" readonly></div><div class="flex gap-2"><button onclick="saveLogoLocal()" class="bg-blue-600 text-white px-4 py-1.5 rounded text-xs font-bold">Simpan Logo</button><button onclick="resetLogo()" class="bg-red-100 text-red-600 px-4 py-1.5 rounded text-xs font-bold">Reset</button></div></div></div>
                                         </div>
+                                        <!-- UPDATED SCHOOL INFO TAB -->
                                         <div id="sub-school" class="sub-tab-content hidden">
                                             <h4 class="text-lg font-bold text-slate-800 mb-4">Informasi Sekolah</h4>
-                                            <div class="space-y-4 max-w-2xl"><div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Nama Sekolah</label><input id="sch-name" class="w-full border p-2 rounded-lg text-sm" value="SMA NEGERI"></div><div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Alamat</label><textarea id="sch-addr" class="w-full border p-2 rounded-lg text-sm" rows="2"></textarea></div><div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Email</label><input id="sch-email" class="w-full border p-2 rounded-lg text-sm"></div><div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Website</label><input id="sch-web" class="w-full border p-2 rounded-lg text-sm"></div><button onclick="saveSchoolInfo()" class="bg-slate-800 text-white px-6 py-2 rounded-lg text-sm font-bold">Simpan Info</button></div>
+                                            <div class="space-y-4 max-w-2xl">
+                                                <!-- Nama Sekolah -->
+                                                <div>
+                                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Nama Sekolah</label>
+                                                    <input id="sch-name" class="w-full border p-2 rounded-lg text-sm" value="SMA NEGERI">
+                                                </div>
+                                                
+                                                <!-- Jenjang Sekolah (NEW) -->
+                                                <div>
+                                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Jenjang Sekolah</label>
+                                                    <div class="relative">
+                                                        <select id="sch-level" class="w-full border p-2 rounded-lg text-sm appearance-none bg-white">
+                                                            <option value="">Pilih Jenjang</option>
+                                                            <option value="SD/MI">Setingkat SD/MI</option>
+                                                            <option value="SMP/Mts">Setingkat SMP/Mts</option>
+                                                            <option value="SMA/SMK/MA">Setingkat SMA/SMK/MA</option>
+                                                        </select>
+                                                        <i data-feather="chevron-down" class="absolute right-3 top-3 w-4 h-4 text-slate-400 pointer-events-none"></i>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Alamat -->
+                                                <div>
+                                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Alamat Sekolah</label>
+                                                    <textarea id="sch-addr" class="w-full border p-2 rounded-lg text-sm" rows="2"></textarea>
+                                                </div>
+
+                                                <!-- Email -->
+                                                <div>
+                                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Email Sekolah</label>
+                                                    <input id="sch-email" class="w-full border p-2 rounded-lg text-sm">
+                                                </div>
+
+                                                <!-- Website -->
+                                                <div>
+                                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Website Sekolah</label>
+                                                    <input id="sch-web" class="w-full border p-2 rounded-lg text-sm">
+                                                </div>
+
+                                                <button onclick="saveSchoolInfo()" class="bg-slate-800 text-white px-6 py-2 rounded-lg text-sm font-bold">Simpan Info</button>
+                                            </div>
                                         </div>
+                                        <!-- END UPDATED SCHOOL INFO TAB -->
+                                        
                                         <div id="sub-rules" class="sub-tab-content hidden">
                                             <h4 class="text-lg font-bold text-slate-800 mb-4">Panduan & Tata Tertib</h4>
                                             <div class="flex items-center gap-3 mb-4"><label class="text-sm font-bold text-slate-600">Tampilkan?</label><div class="relative inline-block w-10 mr-2 align-middle select-none"><input type="checkbox" id="toggle-rules" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-slate-300 checked:right-0 checked:border-blue-600"/><label for="toggle-rules" class="toggle-label block overflow-hidden h-5 rounded-full bg-slate-300 cursor-pointer"></label></div></div>
@@ -317,7 +360,18 @@
             const savedLogo = localStorage.getItem('school_logo_url_base64');
             if(savedLogo) applyLogo(savedLogo);
             setInterval(() => { const now = new Date(); if(document.getElementById('digital-clock')) document.getElementById('digital-clock').textContent = now.toLocaleTimeString(); }, 1000);
-            if(localStorage.getItem('school_info')) { const si = JSON.parse(localStorage.getItem('school_info')); if(document.getElementById('sch-name')) document.getElementById('sch-name').value = si.name; if(document.getElementById('sch-addr')) document.getElementById('sch-addr').value = si.addr; if(document.getElementById('sch-email')) document.getElementById('sch-email').value = si.email || ''; if(document.getElementById('sch-web')) document.getElementById('sch-web').value = si.web || ''; }
+            
+            // UPDATED SCHOOL INFO LOADER
+            if(localStorage.getItem('school_info')) { 
+                const si = JSON.parse(localStorage.getItem('school_info')); 
+                if(document.getElementById('sch-name')) document.getElementById('sch-name').value = si.name || ''; 
+                if(document.getElementById('sch-level')) document.getElementById('sch-level').value = si.level || ''; // Load Level
+                if(document.getElementById('sch-addr')) document.getElementById('sch-addr').value = si.addr || ''; 
+                if(document.getElementById('sch-email')) document.getElementById('sch-email').value = si.email || ''; 
+                if(document.getElementById('sch-web')) document.getElementById('sch-web').value = si.web || ''; 
+                // Update Header
+                if(document.getElementById('school-name-display')) document.getElementById('school-name-display').textContent = si.name || 'CBT ONLINE';
+            }
             
             // Auto Load Admin Stats on Init if data exists
             if(localStorage.getItem('cbt_admin_cache')) {
@@ -424,15 +478,19 @@
             }
         }
         
+        // UPDATED SAVE SCHOOL INFO FUNCTION
         function saveSchoolInfo() {
             const info = { 
                 name: document.getElementById('sch-name').value, 
+                level: document.getElementById('sch-level').value, // Save Level
                 addr: document.getElementById('sch-addr').value,
                 email: document.getElementById('sch-email').value,
                 web: document.getElementById('sch-web').value
             };
             localStorage.setItem('school_info', JSON.stringify(info));
-            alert("Tersimpan!");
+            // Update UI Header immediately
+            if(document.getElementById('school-name-display')) document.getElementById('school-name-display').textContent = info.name || 'CBT ONLINE';
+            alert("Informasi Sekolah Tersimpan!");
         }
         function saveRules() { alert("Panduan tersimpan!"); }
 
@@ -481,7 +539,7 @@
 
         // --- DATA ---
         async function fetchAdminData() {
-            const btn = document.getElementById('btn-refresh'); const icon = btn.querySelector('i'); icon.classList.add('animate-spin');
+            const btn = document.getElementById('btn-refresh'); const icon = btn ? btn.querySelector('i') : null; if(icon) icon.classList.add('animate-spin');
             if(GOOGLE_SCRIPT_URL) { 
                 try { 
                     const res = await fetch(GOOGLE_SCRIPT_URL); 
@@ -492,11 +550,11 @@
                     } 
                 } catch(e) {} 
             }
-            renderAdminTables(); updateDashboardStats(); icon.classList.remove('animate-spin');
+            renderAdminTables(); updateDashboardStats(); if(icon) icon.classList.remove('animate-spin');
         }
         function renderAdminTables() {
             const dashRows = adminDataCache.slice(0, 10).map(s => `<tr><td class="px-6 py-3">${new Date(s.timestamp).toLocaleTimeString()}</td><td class="px-6 py-3 font-bold">${s.nama}</td><td class="px-6 py-3 text-xs">${s.kelas} ${s.jurusan}</td><td class="px-6 py-3">${s.mapel}</td><td class="px-6 py-3 font-bold text-blue-600">${s.nilaiAkhir}</td><td class="px-6 py-3"><span class="px-2 py-1 rounded text-xs font-bold ${s.nilaiAkhir>=75?'bg-emerald-100 text-emerald-600':'bg-red-100 text-red-600'}">${s.nilaiAkhir>=75?'Lulus':'Remidi'}</span></td></tr>`).join('');
-            document.getElementById('table-results-body').innerHTML = dashRows;
+            if(document.getElementById('table-results-body')) document.getElementById('table-results-body').innerHTML = dashRows;
             const studRows = adminDataCache.map((s, i) => `<tr><td class="px-6 py-3"><div class="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-xs">${s.nama[0]}</div></td><td class="px-6 py-3 font-medium">${s.nama}</td><td class="px-6 py-3 text-slate-500">${s.kelas}</td><td class="px-6 py-3 text-slate-500">${s.jurusan}</td><td class="px-6 py-3 text-right"><button onclick="editStudent(${i})" class="text-blue-500 mr-2 hover:underline">Edit</button><button onclick="deleteStudent(${i})" class="text-red-500 hover:underline">Hapus</button></td></tr>`).join('');
             document.getElementById('table-students-body').innerHTML = studRows;
         }
