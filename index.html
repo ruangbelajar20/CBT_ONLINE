@@ -26,13 +26,13 @@
         .modern-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; color: #334155; font-size: 0.875rem; vertical-align: middle; white-space: nowrap; }
         .modern-table tr:hover { background: #f1f5f9; }
         
-        /* Global Dropdown (Fix tertutup tabel) */
+        /* Global Dropdown */
         #global-dropdown { position: fixed; z-index: 9999; background: white; border: 1px solid #e2e8f0; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border-radius: 0.5rem; width: 180px; display: none; }
         #global-dropdown button { display: block; width: 100%; text-align: left; padding: 0.5rem 1rem; font-size: 0.875rem; color: #334155; transition: background 0.2s; }
         #global-dropdown button:hover { background-color: #f1f5f9; color: #2563eb; }
 
         /* Navigation Styles */
-        .nav-item, .settings-nav-item { border-left: 4px solid transparent; transition: all 0.2s ease-in-out; }
+        .nav-item, .settings-nav-item { border-left: 4px solid transparent; transition: all 0.2s ease-in-out; cursor: pointer; }
         .nav-item.active-nav { background-color: #eff6ff; color: #2563eb; border-left-color: #2563eb; }
         .settings-nav-item.active { background: linear-gradient(90deg, #eff6ff 0%, #ffffff 100%); color: #2563eb; border-left-color: #2563eb; font-weight: 700; }
         .settings-nav-item:hover:not(.active), .nav-item:hover:not(.active-nav) { background-color: #f8fafc; border-left-color: #cbd5e1; }
@@ -106,7 +106,7 @@
         .exam-card-label { width: 40px; font-weight: bold; }
         .exam-card-val { flex: 1; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        /* PRINT OPTIMIZATION (CENTERED, 3 COLS, NO CUT OFF) */
+        /* PRINT OPTIMIZATION (FINAL FIX) */
         @media print {
             @page { 
                 size: A4 portrait; 
@@ -121,25 +121,27 @@
                 position: absolute; 
                 left: 0; 
                 top: 0; 
-                width: 210mm; /* Full A4 Width */
+                width: 210mm; /* Lebar A4 */
                 min-height: 297mm;
                 
                 display: grid;
-                /* 3 Kolom @ 6cm = 18cm. Sisa 3cm untuk gap & margin. */
+                /* 3 Kolom @ 6cm = 18cm. 
+                   Sisa 3cm untuk margin kiri/kanan & gap.
+                */
                 grid-template-columns: repeat(3, 6cm); 
                 grid-auto-rows: 4cm;
                 
-                /* Jarak antar kartu */
+                /* Gap 5mm antar kartu */
                 column-gap: 5mm; 
                 row-gap: 5mm;
                 
-                /* Center content horizontally on page */
-                justify-content: center;
-                align-content: start;
+                /* Margin Halaman: Kiri 10mm, Atas 10mm */
+                padding-left: 10mm; 
+                padding-top: 10mm;
+                padding-right: 5mm; /* Safety margin kanan */
                 
-                /* Padding atas untuk margin printer */
-                padding-top: 10mm; 
-                padding-bottom: 10mm;
+                justify-content: start;
+                align-content: start;
             }
             
             .exam-card { 
@@ -543,8 +545,11 @@
                                         </div>
                                     </div>
                                     <!-- 5. TENTANG & PLACEHOLDERS -->
-                                    <div id="set-content-about" class="settings-content hidden-view text-center py-10">...</div>
-                                    <div id="set-content-access" class="settings-content hidden-view text-center text-slate-400 py-20">Manajemen Akses User.</div>
+                                    <div id="set-content-about" class="settings-content hidden-view text-center py-10">
+                                        <h4 class="font-bold text-lg mb-2">Tentang Aplikasi</h4>
+                                        <p class="text-sm text-slate-500">Aplikasi CBT Pro Version 1.0. Dibuat untuk simulasi ujian berbasis komputer.</p>
+                                    </div>
+                                    <div id="set-content-access" class="settings-content hidden-view text-center text-slate-400 py-20">Manajemen Akses User (Coming Soon).</div>
                                 </div>
                             </div>
                         </div>
