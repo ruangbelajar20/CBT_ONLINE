@@ -124,11 +124,11 @@
         .exam-card-label { width: 45px; font-weight: bold; }
         .exam-card-val { flex: 1; font-weight: bold; }
         
-        /* PRINT OPTIMIZATION (Fixed A4 Portrait Grid) */
+        /* PRINT OPTIMIZATION (FIXED 3 COLS LEFT ALIGNED) */
         @media print {
             @page { 
                 size: A4 portrait; 
-                margin: 0; /* Hapus margin default browser */
+                margin: 0; /* Hilangkan margin kertas default */
             }
             body { margin: 0; padding: 0; background: white; }
             body * { visibility: hidden; }
@@ -139,27 +139,32 @@
                 position: absolute; 
                 left: 0; 
                 top: 0; 
-                width: 210mm; /* Lebar A4 Fix */
+                width: 100%; 
                 display: grid;
-                /* 3 Kolom x 6cm = 18cm. Sisa 3cm untuk margin kiri kanan & gap */
-                grid-template-columns: repeat(3, 6cm); 
-                grid-auto-rows: 4cm;
-                column-gap: 5mm; /* Jarak antar kartu horizontal */
-                row-gap: 5mm;    /* Jarak antar kartu vertikal */
                 
-                /* Alignment: Mulai dari kiri dengan padding spesifik */
-                justify-content: start;
+                /* 3 Kolom x 6cm = 18cm. Kertas A4 = 21cm. Sisa 3cm. */
+                grid-template-columns: repeat(3, 6cm); 
+                
+                /* Jarak antar kartu */
+                column-gap: 4mm; 
+                row-gap: 4mm;
+                
+                /* POSISI DI KIRI (Padding kiri 10mm + Konten 180mm + Gap 8mm = 198mm. Aman di A4) */
+                justify-content: start; 
                 align-content: start;
-                padding-left: 10mm; /* Margin Kiri 1cm */
-                padding-top: 10mm;  /* Margin Atas 1cm */
+                
+                padding-left: 10mm !important; /* Margin Kiri Halaman */
+                padding-top: 10mm !important;  /* Margin Atas Halaman */
             }
             
             .exam-card { 
                 visibility: visible;
                 margin: 0; 
                 border: 1px solid #000; 
-                break-inside: avoid;
+                width: 6cm;
+                height: 4cm;
                 page-break-inside: avoid;
+                break-inside: avoid;
                 background-image: none !important;
                 box-shadow: none !important;
             }
