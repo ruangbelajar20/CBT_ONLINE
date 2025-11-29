@@ -80,7 +80,7 @@
             background-image: radial-gradient(#f0f0f0 1px, transparent 1px);
             background-size: 10px 10px;
             font-size: 8px; 
-            /* Default shadow for screen, removed in print */
+            /* Default shadow for screen */
             box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
         }
         
@@ -110,11 +110,11 @@
         .exam-card-label { width: 40px; font-weight: bold; }
         .exam-card-val { flex: 1; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        /* --- PRINT OPTIMIZATION (3 Cols x 6 Rows) --- */
+        /* --- PRINT OPTIMIZATION (3 Cols x 6 Rows - CENTERED) --- */
         @media print {
             @page { 
                 size: A4 portrait; 
-                margin: 0; /* Margin handled by padding to ensure precision */
+                margin: 0; /* Reset margin kertas browser */
             }
             body { margin: 0; padding: 0; background: white; -webkit-print-color-adjust: exact; }
             body * { visibility: hidden; }
@@ -125,31 +125,24 @@
                 position: absolute; 
                 left: 0; 
                 top: 0; 
-                width: 210mm; /* Full A4 Width */
+                width: 210mm; /* Lebar A4 */
                 min-height: 297mm;
                 
                 display: grid;
-                /* CALCULATION: 3 Cards * 60mm = 180mm. 
-                   A4 Width = 210mm. Remainder = 30mm.
-                   Left Margin = 10mm.
-                   Gaps = 2 * 5mm = 10mm.
-                   Right Margin remainder = 10mm.
-                   PERFECT FIT.
-                */
+                /* 3 Kolom @ 6cm = 18cm. Sisa 3cm. */
                 grid-template-columns: repeat(3, 6cm); 
                 grid-auto-rows: 4cm;
                 
-                /* Spacing */
+                /* Gap 5mm antar kartu */
                 column-gap: 5mm; 
                 row-gap: 5mm;
                 
-                /* Alignment */
-                justify-content: start;
+                /* PENTING: Center Horizontal */
+                justify-content: center;
                 align-content: start;
                 
-                /* Page Margins */
-                padding-left: 10mm; 
-                padding-top: 10mm;
+                /* Margin Atas */
+                padding-top: 10mm; 
             }
             
             .exam-card { 
@@ -211,17 +204,33 @@
         <!-- MAIN CONTENT -->
         <main class="flex-grow flex items-center justify-center p-4 overflow-hidden">
 
-            <!-- 1. WELCOME VIEW -->
+            <!-- 1. WELCOME VIEW (LOGIN PESERTA) -->
             <div id="view-welcome" class="glass-card-login w-full max-w-md p-10 fade-in relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
                 <div class="text-center mb-8"><h2 class="text-3xl font-extrabold text-slate-800 mb-1">Login Peserta</h2><p class="text-slate-400 text-sm">Silakan masuk untuk memulai ujian</p></div>
                 <div class="space-y-5">
-                    <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 pl-1">Nama Lengkap</label><div class="relative group"><i data-feather="user" class="absolute left-4 top-3.5 w-5 h-5 text-slate-300 group-focus-within:text-blue-600 transition"></i><input type="text" id="input-nama" class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all font-semibold text-slate-700" placeholder="Ketik nama Anda..."></div></div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 pl-1">Kelas</label><div class="relative group"><select id="input-kelas" class="w-full pl-3 pr-8 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all font-bold text-slate-700 cursor-pointer appearance-none text-sm"></select><i data-feather="chevron-down" class="absolute right-3 top-3.5 w-4 h-4 text-slate-400 pointer-events-none"></i></div></div>
-                        <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 pl-1">Jurusan</label><div class="relative group"><select id="input-jurusan" class="w-full pl-3 pr-8 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all font-bold text-slate-700 cursor-pointer appearance-none text-sm"></select><i data-feather="chevron-down" class="absolute right-3 top-3.5 w-4 h-4 text-slate-400 pointer-events-none"></i></div></div>
+                    <!-- Login Form Updated: Username & Password Only -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 pl-1">Username</label>
+                        <div class="relative group">
+                            <i data-feather="user" class="absolute left-4 top-3.5 w-5 h-5 text-slate-300 group-focus-within:text-blue-600 transition"></i>
+                            <input type="text" id="login-username" class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all font-semibold text-slate-700" placeholder="Username Peserta">
+                        </div>
                     </div>
-                    <div id="token-input-group"><label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 pl-1">Token Soal</label><div class="relative group"><i data-feather="key" class="absolute left-4 top-3.5 w-5 h-5 text-slate-300 group-focus-within:text-blue-600 transition"></i><input type="text" id="input-token" class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all font-bold text-blue-600 text-center tracking-[0.2em] uppercase" placeholder="TOKEN"></div></div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 pl-1">Password</label>
+                        <div class="relative group">
+                            <i data-feather="lock" class="absolute left-4 top-3.5 w-5 h-5 text-slate-300 group-focus-within:text-blue-600 transition"></i>
+                            <input type="password" id="login-password" class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all font-semibold text-slate-700" placeholder="Password">
+                        </div>
+                    </div>
+                    <div id="token-input-group">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 pl-1">Token Soal</label>
+                        <div class="relative group">
+                            <i data-feather="key" class="absolute left-4 top-3.5 w-5 h-5 text-slate-300 group-focus-within:text-blue-600 transition"></i>
+                            <input type="text" id="input-token" class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all font-bold text-blue-600 text-center tracking-[0.2em] uppercase" placeholder="TOKEN">
+                        </div>
+                    </div>
                 </div>
                 <div id="input-error" class="mt-4 hidden bg-red-50 border border-red-100 text-red-600 text-xs font-bold p-3 rounded-xl flex items-center animate-pulse"><i data-feather="alert-circle" class="w-4 h-4 mr-2 shrink-0"></i> <span id="error-text">Error</span></div>
                 <button onclick="startQuiz()" class="w-full mt-8 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-200 transition transform active:scale-[0.98] flex justify-center items-center gap-2 text-sm">Mulai Mengerjakan <i data-feather="arrow-right" class="w-4 h-4"></i></button>
@@ -343,7 +352,7 @@
                                     <table class="w-full text-left modern-table relative">
                                         <thead class="bg-slate-50 text-xs font-bold text-slate-500 uppercase border-b sticky top-0 z-20">
                                             <tr>
-                                                <!-- FIX: Add Select All Checkbox -->
+                                                <!-- Check All Feature -->
                                                 <th class="px-4 py-3"><input type="checkbox" id="select-all-students" onclick="toggleAllCheckboxes(this)"></th>
                                                 <th class="px-4 py-3 text-center">Aksi</th>
                                                 <th class="px-4 py-3">#</th>
