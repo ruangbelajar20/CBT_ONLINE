@@ -24,15 +24,31 @@
         .modern-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; color: #334155; font-size: 0.875rem; vertical-align: middle; }
         .modern-table tr:hover { background: #f1f5f9; }
         
-        /* Active State with Blue Line */
-        .settings-nav-item { border-left: 4px solid transparent; transition: all 0.2s; }
+        /* --- NAVIGATION STYLES (BLUE BORDER EFFECT) --- */
+        .nav-item, .settings-nav-item {
+            border-left: 4px solid transparent;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        /* Main Menu Active */
+        .nav-item.active-nav {
+            background-color: #eff6ff; /* blue-50 */
+            color: #2563eb; /* blue-600 */
+            border-left-color: #2563eb;
+        }
+
+        /* Settings Menu Active */
         .settings-nav-item.active { 
-            border-left: 4px solid #2563eb; 
-            color: #2563eb; 
             background: linear-gradient(90deg, #eff6ff 0%, #ffffff 100%);
+            color: #2563eb; 
+            border-left-color: #2563eb;
             font-weight: 700;
         }
-        .settings-nav-item:hover:not(.active) { background-color: #f8fafc; border-left-color: #cbd5e1; }
+        
+        .settings-nav-item:hover:not(.active), .nav-item:hover:not(.active-nav) { 
+            background-color: #f8fafc; 
+            border-left-color: #cbd5e1; /* light gray hover */
+        }
 
         /* Toggle Switch */
         .toggle-checkbox:checked { right: 0; border-color: #2563eb; }
@@ -123,10 +139,10 @@
                     </div>
                     <nav class="flex-grow p-4 space-y-1 overflow-y-auto custom-scrollbar">
                         <p class="nav-header px-4 text-[10px] font-extrabold text-slate-400 uppercase mb-2 mt-2 tracking-wider">Menu Utama</p>
-                        <button onclick="adminNav('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-slate-600 hover:bg-slate-50 transition nav-item active-nav bg-blue-50 text-blue-700"><i data-feather="grid" class="w-5 h-5"></i> <span class="nav-text">Dashboard</span></button>
-                        <button onclick="adminNav('students')" id="nav-students" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-slate-600 hover:bg-slate-50 transition nav-item"><i data-feather="users" class="w-5 h-5"></i> <span class="nav-text">Data Peserta</span></button>
-                        <button onclick="adminNav('questions')" id="nav-questions" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-slate-600 hover:bg-slate-50 transition nav-item"><i data-feather="file-text" class="w-5 h-5"></i> <span class="nav-text">Bank Soal</span></button>
-                        <button onclick="adminNav('settings')" id="nav-settings" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-slate-600 hover:bg-slate-50 transition nav-item"><i data-feather="settings" class="w-5 h-5"></i> <span class="nav-text">Pengaturan</span></button>
+                        <button onclick="adminNav('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-slate-600 active-nav"><i data-feather="grid" class="w-5 h-5"></i> <span class="nav-text">Dashboard</span></button>
+                        <button onclick="adminNav('students')" id="nav-students" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-slate-600"><i data-feather="users" class="w-5 h-5"></i> <span class="nav-text">Data Peserta</span></button>
+                        <button onclick="adminNav('questions')" id="nav-questions" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-slate-600"><i data-feather="file-text" class="w-5 h-5"></i> <span class="nav-text">Bank Soal</span></button>
+                        <button onclick="adminNav('settings')" id="nav-settings" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-slate-600"><i data-feather="settings" class="w-5 h-5"></i> <span class="nav-text">Pengaturan</span></button>
                     </nav>
                     <div class="p-4 border-t"><button onclick="logoutAdmin()" class="w-full py-2 text-sm font-bold text-red-500 bg-red-50 rounded-lg hover:bg-red-100">Logout</button></div>
                 </aside>
@@ -177,12 +193,12 @@
                                 <!-- Settings Sidebar -->
                                 <div class="w-full lg:w-64 bg-white rounded-2xl border border-slate-200 h-fit lg:h-full overflow-y-auto shadow-sm shrink-0">
                                     <nav class="p-3 space-y-1">
-                                        <button onclick="switchSettingsTab('profile')" class="settings-nav-item w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition active" id="set-nav-profile"><i data-feather="user" class="w-4 h-4"></i> Profil Saya</button>
-                                        <button onclick="switchSettingsTab('token')" class="settings-nav-item w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition" id="set-nav-token"><i data-feather="key" class="w-4 h-4"></i> Token</button>
-                                        <button onclick="switchSettingsTab('access')" class="settings-nav-item w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition" id="set-nav-access"><i data-feather="shield" class="w-4 h-4"></i> Kelola Akses</button>
-                                        <button onclick="switchSettingsTab('license')" class="settings-nav-item w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition" id="set-nav-license"><i data-feather="file-minus" class="w-4 h-4"></i> Lisensi</button>
-                                        <button onclick="switchSettingsTab('others')" class="settings-nav-item w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition" id="set-nav-others"><i data-feather="sliders" class="w-4 h-4"></i> Lainnya</button>
-                                        <button onclick="switchSettingsTab('about')" class="settings-nav-item w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition" id="set-nav-about"><i data-feather="info" class="w-4 h-4"></i> Tentang</button>
+                                        <button onclick="switchSettingsTab('profile')" class="settings-nav-item w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-3 active" id="set-nav-profile"><i data-feather="user" class="w-4 h-4"></i> Profil Saya</button>
+                                        <button onclick="switchSettingsTab('token')" class="settings-nav-item w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-3" id="set-nav-token"><i data-feather="key" class="w-4 h-4"></i> Token</button>
+                                        <button onclick="switchSettingsTab('access')" class="settings-nav-item w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-3" id="set-nav-access"><i data-feather="shield" class="w-4 h-4"></i> Kelola Akses</button>
+                                        <button onclick="switchSettingsTab('license')" class="settings-nav-item w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-3" id="set-nav-license"><i data-feather="file-minus" class="w-4 h-4"></i> Lisensi</button>
+                                        <button onclick="switchSettingsTab('others')" class="settings-nav-item w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-3" id="set-nav-others"><i data-feather="sliders" class="w-4 h-4"></i> Lainnya</button>
+                                        <button onclick="switchSettingsTab('about')" class="settings-nav-item w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-3" id="set-nav-about"><i data-feather="info" class="w-4 h-4"></i> Tentang</button>
                                     </nav>
                                 </div>
 
@@ -190,7 +206,7 @@
                                 <div class="flex-grow bg-white rounded-2xl border border-slate-200 shadow-sm p-8 overflow-y-auto">
                                     
                                     <!-- 1. PROFIL SAYA -->
-                                    <div id="set-content-profile" class="settings-content hidden-view">
+                                    <div id="set-content-profile" class="settings-content">
                                         <div class="flex flex-col items-center mb-8">
                                             <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" class="h-24 w-24 rounded-full bg-slate-100 border-4 border-white shadow-lg mb-4">
                                             <h2 class="text-2xl font-bold text-slate-800">Administrator</h2>
@@ -246,7 +262,7 @@
                                         </div>
                                     </div>
 
-                                    <!-- 3. LISENSI -->
+                                    <!-- 3. LISENSI (UPDATED) -->
                                     <div id="set-content-license" class="settings-content hidden-view">
                                         <h4 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-4 mb-6">Lisensi Aplikasi</h4>
                                         <p class="text-sm text-slate-500 mb-6">Kelola dan tinjau status lisensi anda.</p>
@@ -271,7 +287,6 @@
 
                                     <!-- 4. TAB LAINNYA (MERGED) -->
                                     <div id="set-content-others" class="settings-content hidden-view">
-                                        <!-- Logo Section -->
                                         <div class="mb-10">
                                             <h4 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-4 mb-6">Logo Aplikasi</h4>
                                             <div class="flex gap-6 items-start">
@@ -282,7 +297,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <!-- School Info Section -->
                                         <div class="mb-10">
                                             <h4 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-4 mb-6">Informasi Sekolah</h4>
                                             <div class="space-y-4 max-w-2xl">
@@ -291,7 +305,6 @@
                                                 <button onclick="saveSchoolInfo()" class="bg-slate-800 text-white px-6 py-2 rounded-lg text-sm font-bold">Simpan Info</button>
                                             </div>
                                         </div>
-                                        <!-- Rules Section -->
                                         <div>
                                             <h4 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-4 mb-6">Panduan & Tata Tertib</h4>
                                             <div class="flex items-center gap-3 mb-4"><label class="text-sm font-bold text-slate-600">Tampilkan?</label><div class="relative inline-block w-10 mr-2 align-middle select-none"><input type="checkbox" id="toggle-rules" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-slate-300 checked:right-0 checked:border-blue-600"/><label for="toggle-rules" class="toggle-label block overflow-hidden h-5 rounded-full bg-slate-300 cursor-pointer"></label></div></div>
@@ -367,57 +380,67 @@
 
     <script>
         feather.replace();
+        let tokenInterval; // Define at top level to fix reference error
         let db = JSON.parse(localStorage.getItem('cbt_db_v4') || '{}');
         let config = { logo: "", classes: ["X", "XI", "XII"], majors: ["FARMASI 1", "FARMASI 2", "KEPERAWATAN 1", "KEPERAWATAN 2", "TJKT 1", "TJKT 2", "TBSM 1", "TBSM 2", "TKR"], tokenDuration: 105 };
         let adminDataCache = [], editingStudentIdx = null, activeTokenAdmin = null, editingQIdx = null;
         
         function init() {
             updateDropdowns();
+            
             // Token Init
             const savedToken = localStorage.getItem('cbt_token_dash');
             if(savedToken) document.getElementById('dash-token').textContent = savedToken;
-            document.getElementById('setting-token-display').textContent = savedToken || "NOFDTI"; // Display in settings
+            if(document.getElementById('setting-token-display')) document.getElementById('setting-token-display').textContent = savedToken || "NOFDTI";
 
             const tokenDur = localStorage.getItem('cbt_token_duration');
             if(tokenDur) { 
                 config.tokenDuration = parseInt(tokenDur);
-                document.getElementById('token-duration').value = config.tokenDuration;
+                if(document.getElementById('token-duration')) document.getElementById('token-duration').value = config.tokenDuration;
             }
             startTokenTimer();
 
             const savedLogo = localStorage.getItem('school_logo_url_base64');
             if(savedLogo) applyLogo(savedLogo);
-            setInterval(() => { const now = new Date(); document.getElementById('digital-clock').textContent = now.toLocaleTimeString(); }, 1000);
+            
+            setInterval(() => { 
+                const now = new Date(); 
+                const timeString = now.toLocaleTimeString();
+                if(document.getElementById('digital-clock')) document.getElementById('digital-clock').textContent = timeString; 
+            }, 1000);
             
             if(localStorage.getItem('school_info')) {
                 const si = JSON.parse(localStorage.getItem('school_info'));
-                document.getElementById('sch-name').value = si.name;
-                document.getElementById('sch-addr').value = si.addr;
+                if(document.getElementById('sch-name')) document.getElementById('sch-name').value = si.name;
+                if(document.getElementById('sch-addr')) document.getElementById('sch-addr').value = si.addr;
             }
         }
         init();
 
         // --- TOKEN LOGIC ---
-        let tokenInterval;
         function startTokenTimer() {
+            // Using a fixed duration for simulation since real tokens expire based on server timestamp
             const totalSecs = config.tokenDuration * 60;
             let elapsed = 0;
-            clearInterval(tokenInterval);
+            
+            if (tokenInterval) clearInterval(tokenInterval);
+            
             tokenInterval = setInterval(() => {
                 elapsed++;
                 const remaining = totalSecs - elapsed;
+                
                 if(remaining <= 0) {
                      const expText = "Expired";
-                     document.getElementById('token-timer-display').textContent = expText; // In settings
+                     if(document.getElementById('token-timer-display')) document.getElementById('token-timer-display').textContent = expText;
                      if(document.getElementById('token-timer-settings')) document.getElementById('token-timer-settings').textContent = expText;
                      return;
                 }
+                
                 const h = Math.floor(remaining / 3600);
                 const m = Math.floor((remaining % 3600) / 60);
                 const s = remaining % 60;
                 const timeStr = `${h}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
                 
-                // Update both displays if they exist
                 if(document.getElementById('token-timer-display')) document.getElementById('token-timer-display').textContent = timeStr;
                 if(document.getElementById('token-timer-settings')) document.getElementById('token-timer-settings').textContent = timeStr;
                 
@@ -469,9 +492,12 @@
 
         function resetLogo() { localStorage.removeItem('school_logo_url_base64'); location.reload(); }
         function applyLogo(src) {
-            document.getElementById('school-logo-img').src = src;
-            document.getElementById('school-logo-img').classList.remove('hidden');
-            document.getElementById('default-logo').classList.add('hidden');
+            const logoImg = document.getElementById('school-logo-img');
+            if(logoImg) {
+                logoImg.src = src;
+                logoImg.classList.remove('hidden');
+                document.getElementById('default-logo').classList.add('hidden');
+            }
         }
         
         function saveSchoolInfo() {
@@ -517,10 +543,9 @@
             let result = ""; for(let i=0; i<6; i++) result += chars.charAt(Math.floor(Math.random() * chars.length)); 
             
             document.getElementById('dash-token').textContent = result; 
-            document.getElementById('setting-token-display').textContent = result; // Update settings display too
+            if(document.getElementById('setting-token-display')) document.getElementById('setting-token-display').textContent = result; 
             localStorage.setItem('cbt_token_dash', result); 
             
-            // Reset Timer
             startTokenTimer();
         }
         function resetTrafficStats() { 
