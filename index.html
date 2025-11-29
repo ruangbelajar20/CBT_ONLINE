@@ -58,13 +58,38 @@
         .editor-content-area img { max-width: 100%; height: auto; border-radius: 8px; margin: 10px 0; }
 
         /* Card Print Style */
-        .exam-card { width: 100%; max-width: 500px; border: 2px solid #000; padding: 10px; background: white; font-family: 'Times New Roman', serif; margin-bottom: 20px; }
-        .exam-card-header { display: flex; border-bottom: 2px solid #000; padding-bottom: 5px; margin-bottom: 10px; align-items: center; justify-content: center; text-align: center; }
-        .exam-card-logo { width: 60px; height: 60px; object-fit: contain; margin-right: 15px; }
-        .exam-card-title { font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 15px; text-transform: uppercase; text-decoration: underline; }
-        .exam-card-row { display: flex; margin-bottom: 5px; font-size: 13px; font-weight: bold; }
-        .exam-card-label { width: 120px; }
+        .exam-card { 
+            width: 100%; 
+            max-width: 700px; /* Lebar ditambah */
+            border: 2px solid #000; 
+            padding: 15px; 
+            background: white; 
+            font-family: 'Times New Roman', serif; 
+            margin-bottom: 20px; 
+            page-break-inside: avoid;
+        }
+        .exam-card-header { 
+            display: flex; 
+            border-bottom: 3px double #000; 
+            padding-bottom: 10px; 
+            margin-bottom: 15px; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center; 
+        }
+        .exam-card-logo { width: 70px; height: 70px; object-fit: contain; margin-right: 20px; }
+        .exam-card-title { font-weight: bold; font-size: 16px; text-align: center; margin-bottom: 5px; text-transform: uppercase; text-decoration: underline; }
+        .exam-card-subtitle { font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 20px; text-transform: uppercase; }
+        .exam-card-row { display: flex; margin-bottom: 8px; font-size: 14px; font-weight: bold; }
+        .exam-card-label { width: 140px; }
         .exam-card-val { flex: 1; }
+        
+        @media print {
+            body * { visibility: hidden; }
+            #card-preview-area, #card-preview-area * { visibility: visible; }
+            #card-preview-area { position: absolute; left: 0; top: 0; width: 100%; }
+            .exam-card { max-width: 100%; width: 100%; page-break-after: always; margin: 0; border: 1px solid #000; }
+        }
     </style>
 </head>
 <body class="h-screen overflow-hidden flex flex-col bg-blue-600">
@@ -367,7 +392,7 @@
                             </div>
                         </div>
 
-                        <!-- PANEL: KARTU PESERTA (NEW) -->
+                        <!-- PANEL: KARTU PESERTA (UPDATED) -->
                         <div id="view-admin-student-card" class="admin-panel hidden-view h-full bg-white p-8 rounded-xl border border-slate-200 overflow-y-auto">
                             <div class="flex justify-between items-center mb-6 pb-4 border-b">
                                 <h3 class="font-bold text-xl text-slate-800">Kartu Peserta</h3>
@@ -375,24 +400,53 @@
                             </div>
                             
                             <h4 class="font-bold text-lg text-slate-700 mb-2">Template Kartu</h4>
-                            <p class="text-sm text-slate-500 mb-6">Anda dapat mengubah logo, kop kartu, dan judul kartu. Lakukan kastemisasi sesuai kebutuhan.</p>
+                            <p class="text-sm text-slate-500 mb-6">Sesuaikan tampilan kartu ujian. Anda dapat mengubah teks kop, judul, dan logo.</p>
 
-                            <div class="flex flex-col items-center mb-8">
-                                <div id="card-preview-area">
-                                    <!-- Card Content Generated via JS -->
-                                </div>
-                            </div>
+                            <div class="flex flex-col lg:flex-row gap-8">
+                                <!-- LEFT: SETTINGS -->
+                                <div class="w-full lg:w-1/3 space-y-6">
+                                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                        <h5 class="font-bold text-slate-700 mb-4 text-sm">Pengaturan Kop & Judul</h5>
+                                        <div class="space-y-3">
+                                            <div>
+                                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Header Baris 1 (Kop)</label>
+                                                <input id="card-header-1" class="w-full border p-2 rounded text-sm font-bold" value="PELAKSANA UJIAN SEKOLAH" oninput="saveCardSettings(); renderCardPreview()">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Header Baris 2 (Nama Sekolah)</label>
+                                                <input id="card-header-2" class="w-full border p-2 rounded text-sm font-bold" value="SMA NEGERI CONTOH" oninput="saveCardSettings(); renderCardPreview()">
+                                                <p class="text-[10px] text-slate-400 mt-1 italic">*Default: Mengambil dari Info Sekolah</p>
+                                            </div>
+                                            <hr class="border-slate-200 my-2">
+                                            <div>
+                                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Judul Kartu</label>
+                                                <input id="card-title" class="w-full border p-2 rounded text-sm font-bold" value="KARTU PESERTA" oninput="saveCardSettings(); renderCardPreview()">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Sub-Judul Kartu</label>
+                                                <input id="card-subtitle" class="w-full border p-2 rounded text-sm" value="PENILAIAN AKHIR SEMESTER (PAS)" oninput="saveCardSettings(); renderCardPreview()">
+                                            </div>
+                                        </div>
+                                    </div>
 
-                            <div class="max-w-md mx-auto">
-                                <label class="block text-sm font-bold text-slate-600 mb-2">Ubah Logo:</label>
-                                <div class="flex gap-2">
-                                    <input type="file" id="card-logo-input" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" accept="image/*" onchange="updateCardLogo(this)">
+                                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                        <h5 class="font-bold text-slate-700 mb-4 text-sm">Logo Kartu</h5>
+                                        <input type="file" id="card-logo-input" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200" accept="image/*" onchange="updateCardLogo(this)">
+                                    </div>
+
+                                    <div class="pt-4 border-t">
+                                        <button onclick="window.print()" class="w-full py-3 bg-slate-800 text-white font-bold rounded-lg mb-3 shadow-lg hover:bg-slate-900"><i data-feather="printer" class="inline w-4 h-4 mr-2"></i> Cetak Kartu</button>
+                                        <button onclick="adminNav('students')" class="w-full py-3 bg-white border border-slate-300 text-slate-600 font-bold rounded-lg hover:bg-slate-50">Kembali</button>
+                                    </div>
                                 </div>
-                            </div>
-                            
-                            <div class="mt-8 text-center">
-                                <button onclick="window.print()" class="px-6 py-2 bg-slate-800 text-white font-bold rounded-lg mr-2"><i data-feather="printer" class="inline w-4 h-4 mr-1"></i> Cetak Kartu</button>
-                                <button onclick="adminNav('students')" class="px-6 py-2 bg-slate-100 text-slate-600 font-bold rounded-lg">Kembali</button>
+
+                                <!-- RIGHT: PREVIEW -->
+                                <div class="w-full lg:w-2/3 flex flex-col items-center bg-slate-100 rounded-xl p-8 border border-slate-200 min-h-[500px]">
+                                    <p class="text-xs font-bold text-slate-400 uppercase mb-4 tracking-widest">Preview Kartu</p>
+                                    <div id="card-preview-area">
+                                        <!-- Card Content Generated via JS -->
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -599,6 +653,22 @@
         function showStudentCard() {
             document.querySelectorAll('.admin-panel').forEach(e => e.classList.add('hidden-view'));
             document.getElementById('view-admin-student-card').classList.remove('hidden-view');
+            
+            // Load Card Settings
+            const conf = JSON.parse(localStorage.getItem('cbt_card_config') || '{}');
+            document.getElementById('card-header-1').value = conf.h1 || 'PELAKSANA UJIAN SEKOLAH';
+            
+            // Auto load school name if empty in config
+            if(!conf.h2 && localStorage.getItem('school_info')) {
+                const si = JSON.parse(localStorage.getItem('school_info'));
+                document.getElementById('card-header-2').value = si.name || 'NAMA SEKOLAH';
+            } else {
+                document.getElementById('card-header-2').value = conf.h2 || 'NAMA SEKOLAH';
+            }
+            
+            document.getElementById('card-title').value = conf.title || 'KARTU PESERTA';
+            document.getElementById('card-subtitle').value = conf.subtitle || 'PENILAIAN AKHIR SEMESTER';
+
             renderCardPreview();
         }
 
@@ -627,6 +697,17 @@
             adminNav('students');
         }
 
+        // Updated Card Settings Logic
+        function saveCardSettings() {
+            const config = {
+                h1: document.getElementById('card-header-1').value,
+                h2: document.getElementById('card-header-2').value,
+                title: document.getElementById('card-title').value,
+                subtitle: document.getElementById('card-subtitle').value
+            };
+            localStorage.setItem('cbt_card_config', JSON.stringify(config));
+        }
+
         function renderCardPreview() {
             const container = document.getElementById('card-preview-area');
             container.innerHTML = '';
@@ -638,6 +719,13 @@
             const targets = selectedIdxs.length > 0 ? selectedIdxs.map(i => adminDataCache[i]) : [adminDataCache[0] || {nama:'Jack Sparrow', id_peserta:'123456', kelas:'XI IPA A', ruangan:'LAB Komputer 1', username:'USER_1', password:'PASS_1'}];
             const logoSrc = localStorage.getItem('school_logo_url_base64') || 'https://via.placeholder.com/60';
             const schInfo = JSON.parse(localStorage.getItem('school_info') || '{}');
+            
+            // Get Config
+            const conf = JSON.parse(localStorage.getItem('cbt_card_config') || '{}');
+            const txtH1 = conf.h1 || 'PELAKSANA UJIAN SEKOLAH';
+            const txtH2 = conf.h2 || schInfo.name || 'NAMA SEKOLAH';
+            const txtTitle = conf.title || 'KARTU PESERTA';
+            const txtSubtitle = conf.subtitle || 'PENILAIAN AKHIR SEMESTER';
 
             targets.forEach(s => {
                 const card = document.createElement('div');
@@ -645,18 +733,20 @@
                 card.innerHTML = `
                     <div class="exam-card-header">
                         <img src="${logoSrc}" class="exam-card-logo">
-                        <div>
-                            <div style="font-size:12px; font-weight:bold">PELAKSANA UJIAN SEKOLAH</div>
-                            <div style="font-size:14px; font-weight:bold">${schInfo.name || 'NAMA SEKOLAH'}</div>
-                            <div style="font-size:10px">${schInfo.addr || 'Alamat Sekolah'}</div>
+                        <div style="flex-grow:1">
+                            <div style="font-size:16px; font-weight:bold">${txtH1}</div>
+                            <div style="font-size:18px; font-weight:bold; margin: 4px 0;">${txtH2}</div>
+                            <div style="font-size:12px">${schInfo.addr || 'Alamat Sekolah'}</div>
                         </div>
                     </div>
-                    <div class="exam-card-title">KARTU PESERTA</div>
-                    <div class="exam-card-row"><div class="exam-card-label">Nama</div><div class="exam-card-val">: ${s.nama}</div></div>
-                    <div class="exam-card-row"><div class="exam-card-label">ID Peserta</div><div class="exam-card-val">: ${s.id_peserta || '-'}</div></div>
-                    <div class="exam-card-row"><div class="exam-card-label">Kelas</div><div class="exam-card-val">: ${s.kelas || '-'}</div></div>
-                    <div class="exam-card-row"><div class="exam-card-label">Ruangan</div><div class="exam-card-val">: ${s.ruangan || '-'}</div></div>
-                    <div class="exam-card-row"><div class="exam-card-label">User / Password</div><div class="exam-card-val">: ${s.username || '-'} / ${s.password || '-'}</div></div>
+                    <div class="exam-card-title">${txtTitle}</div>
+                    <div class="exam-card-subtitle">${txtSubtitle}</div>
+                    <div class="exam-card-row"><div class="exam-card-label">Nama Peserta</div><div class="exam-card-val">: ${s.nama}</div></div>
+                    <div class="exam-card-row"><div class="exam-card-label">Nomor Peserta</div><div class="exam-card-val">: ${s.id_peserta || '-'}</div></div>
+                    <div class="exam-card-row"><div class="exam-card-label">Kelas / Jurusan</div><div class="exam-card-val">: ${s.kelas || '-'}</div></div>
+                    <div class="exam-card-row"><div class="exam-card-label">Ruang Ujian</div><div class="exam-card-val">: ${s.ruangan || '-'}</div></div>
+                    <div class="exam-card-row"><div class="exam-card-label">Username</div><div class="exam-card-val">: ${s.username || '-'}</div></div>
+                    <div class="exam-card-row"><div class="exam-card-label">Password</div><div class="exam-card-val">: ${s.password || '-'}</div></div>
                 `;
                 container.appendChild(card);
             });
