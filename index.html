@@ -11,6 +11,7 @@
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #2563eb; }
         
+        /* Glassmorphism & Utils */
         .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); }
         .glass-card-login { background: rgba(255, 255, 255, 1); border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
         .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -23,22 +24,16 @@
         .modern-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; color: #334155; font-size: 0.875rem; vertical-align: middle; }
         .modern-table tr:hover { background: #f1f5f9; }
         
-        /* Settings Sidebar Active State with Modern Blue Line */
-        .settings-nav-item { border-left: 4px solid transparent; }
+        /* Active State with Blue Line */
+        .settings-nav-item { border-left: 4px solid transparent; transition: all 0.2s; }
         .settings-nav-item.active { 
             border-left: 4px solid #2563eb; 
             color: #2563eb; 
             background: linear-gradient(90deg, #eff6ff 0%, #ffffff 100%);
+            font-weight: 700;
         }
-        .settings-nav-item:hover:not(.active) { background-color: #f8fafc; }
-        
-        /* Focus Rings for Modern Feel */
-        button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
-            border-color: #3b82f6;
-        }
-        
+        .settings-nav-item:hover:not(.active) { background-color: #f8fafc; border-left-color: #cbd5e1; }
+
         /* Toggle Switch */
         .toggle-checkbox:checked { right: 0; border-color: #2563eb; }
         .toggle-checkbox:checked + .toggle-label { background-color: #2563eb; }
@@ -133,6 +128,7 @@
                         <button onclick="adminNav('questions')" id="nav-questions" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-slate-600 hover:bg-slate-50 transition nav-item"><i data-feather="file-text" class="w-5 h-5"></i> <span class="nav-text">Bank Soal</span></button>
                         <button onclick="adminNav('settings')" id="nav-settings" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-slate-600 hover:bg-slate-50 transition nav-item"><i data-feather="settings" class="w-5 h-5"></i> <span class="nav-text">Pengaturan</span></button>
                     </nav>
+                    <div class="p-4 border-t"><button onclick="logoutAdmin()" class="w-full py-2 text-sm font-bold text-red-500 bg-red-50 rounded-lg hover:bg-red-100">Logout</button></div>
                 </aside>
 
                 <div class="flex-grow flex flex-col h-full overflow-hidden relative">
@@ -148,6 +144,7 @@
                                 <button onclick="toggleProfileMenu()" class="flex items-center gap-3 hover:bg-slate-50 p-1.5 pr-3 rounded-lg transition border border-transparent hover:border-slate-200"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" class="h-8 w-8 rounded-full bg-blue-100 border border-blue-200"><div class="text-left hidden sm:block"><p class="text-xs font-bold text-slate-700">Administrator</p><p class="text-[10px] text-slate-400 font-medium">Super Admin</p></div><i data-feather="chevron-down" class="w-4 h-4 text-slate-400 ml-1"></i></button>
                                 <div id="profile-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-50">
                                     <a href="#" onclick="adminNav('settings'); switchSettingsTab('profile'); toggleProfileMenu()" class="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50">Profil Saya</a>
+                                    <a href="#" onclick="adminNav('settings'); switchSettingsTab('about'); toggleProfileMenu()" class="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50">Tentang</a>
                                     <div class="border-t border-slate-50 my-1"></div>
                                     <button onclick="logoutAdmin()" class="w-full text-left px-4 py-2 text-sm text-red-500 font-bold hover:bg-red-50">Keluar</button>
                                 </div>
@@ -181,9 +178,9 @@
                                 <div class="w-full lg:w-64 bg-white rounded-2xl border border-slate-200 h-fit lg:h-full overflow-y-auto shadow-sm shrink-0">
                                     <nav class="p-3 space-y-1">
                                         <button onclick="switchSettingsTab('profile')" class="settings-nav-item w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition active" id="set-nav-profile"><i data-feather="user" class="w-4 h-4"></i> Profil Saya</button>
-                                        <button onclick="switchSettingsTab('school')" class="settings-nav-item w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition" id="set-nav-school"><i data-feather="home" class="w-4 h-4"></i> Sekolah</button>
-                                        <button onclick="switchSettingsTab('rules')" class="settings-nav-item w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition" id="set-nav-rules"><i data-feather="book-open" class="w-4 h-4"></i> Panduan</button>
                                         <button onclick="switchSettingsTab('token')" class="settings-nav-item w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition" id="set-nav-token"><i data-feather="key" class="w-4 h-4"></i> Token</button>
+                                        <button onclick="switchSettingsTab('access')" class="settings-nav-item w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition" id="set-nav-access"><i data-feather="shield" class="w-4 h-4"></i> Kelola Akses</button>
+                                        <button onclick="switchSettingsTab('license')" class="settings-nav-item w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition" id="set-nav-license"><i data-feather="file-minus" class="w-4 h-4"></i> Lisensi</button>
                                         <button onclick="switchSettingsTab('others')" class="settings-nav-item w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition" id="set-nav-others"><i data-feather="sliders" class="w-4 h-4"></i> Lainnya</button>
                                         <button onclick="switchSettingsTab('about')" class="settings-nav-item w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 flex items-center gap-3 transition" id="set-nav-about"><i data-feather="info" class="w-4 h-4"></i> Tentang</button>
                                     </nav>
@@ -223,84 +220,69 @@
                                         </div>
                                     </div>
 
-                                    <!-- 2. TAB INFORMASI SEKOLAH -->
-                                    <div id="set-content-school" class="settings-content hidden-view">
-                                        <h4 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-4 mb-6">Informasi Sekolah</h4>
-                                        <div class="space-y-5 max-w-2xl">
-                                            <div><label class="block text-sm font-bold text-slate-600 mb-2">Nama Sekolah</label><input id="sch-name" class="w-full border border-slate-300 p-3 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none" value="SMA NEGERI"></div>
-                                            <div><label class="block text-sm font-bold text-slate-600 mb-2">Jenjang Sekolah</label><select id="sch-level" class="w-full border border-slate-300 p-3 rounded-xl text-sm bg-white"><option>SD/MI</option><option>SMP/MTS</option><option>SMA/SMK/MA</option><option selected>Perguruan Tinggi</option></select></div>
-                                            <div><label class="block text-sm font-bold text-slate-600 mb-2">Alamat Sekolah</label><textarea id="sch-addr" class="w-full border border-slate-300 p-3 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none" rows="3"></textarea></div>
-                                            <div><label class="block text-sm font-bold text-slate-600 mb-2">Email Sekolah</label><input id="sch-email" class="w-full border border-slate-300 p-3 rounded-xl text-sm" type="email"></div>
-                                            <div><label class="block text-sm font-bold text-slate-600 mb-2">Website Sekolah</label><input id="sch-web" class="w-full border border-slate-300 p-3 rounded-xl text-sm"></div>
-                                            <div class="text-right pt-4"><button onclick="saveSchoolInfo()" class="bg-blue-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-blue-700 flex items-center gap-2 ml-auto"><i data-feather="save" class="w-4 h-4"></i> Simpan</button></div>
+                                    <!-- 2. TAB LISENSI (NEW) -->
+                                    <div id="set-content-license" class="settings-content hidden-view">
+                                        <h4 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-4 mb-6">Lisensi Aplikasi</h4>
+                                        <div class="space-y-4 max-w-3xl">
+                                            <div class="flex flex-col sm:flex-row gap-4 items-center bg-slate-50 p-4 rounded-lg border border-slate-100">
+                                                <span class="text-sm font-bold text-slate-500 w-48">Nomor Serial</span>
+                                                <code class="bg-white border p-2 rounded text-xs font-mono text-slate-600 break-all flex-grow text-center sm:text-left">aaf2-1383-55dd-3da8-b0a3-e6f6-33f4-c4da</code>
+                                            </div>
+                                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-8 p-2">
+                                                <div class="flex justify-between sm:block"><span class="text-sm font-bold text-slate-500">Nama Instansi</span><p class="text-sm font-medium text-slate-700 mt-1">[demo] - Utama</p></div>
+                                                <div class="flex justify-between sm:block"><span class="text-sm font-bold text-slate-500">E-Mail</span><p class="text-sm font-medium text-slate-700 mt-1">bebiiigital@gmail.com</p></div>
+                                                <div class="flex justify-between sm:block"><span class="text-sm font-bold text-slate-500">Diterbitkan</span><p class="text-sm font-medium text-slate-700 mt-1">28 November 2025, 9:03 AM <span class="text-xs text-slate-400 italic">(sehari yang lalu)</span></p></div>
+                                                <div class="flex justify-between sm:block"><span class="text-sm font-bold text-slate-500">Versi</span><p class="text-sm font-medium text-slate-700 mt-1">1.20.9</p></div>
+                                                <div class="flex justify-between sm:block"><span class="text-sm font-bold text-slate-500">Penempatan Aplikasi</span><p class="text-sm font-medium text-slate-700 mt-1">Server Online</p></div>
+                                                <div class="flex justify-between sm:block"><span class="text-sm font-bold text-slate-500">Masa Aktif</span><p class="text-sm font-bold text-emerald-600 mt-1">Unlimited</p></div>
+                                            </div>
+                                            <div class="pt-6 text-right border-t border-slate-100 mt-6">
+                                                <button class="bg-blue-600 text-white px-6 py-2.5 rounded-lg font-bold text-sm hover:bg-blue-700 shadow-lg shadow-blue-200 transition">Update Serial Number</button>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <!-- 3. TAB PANDUAN -->
-                                    <div id="set-content-rules" class="settings-content hidden-view">
-                                        <h4 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-4 mb-6">Panduan & Tata Tertib</h4>
-                                        <div class="flex items-center gap-3 mb-6">
-                                            <label class="text-sm font-bold text-slate-600">Tampilkan?</label>
-                                            <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                                                <input type="checkbox" name="toggle" id="toggle-rules" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-slate-300 checked:right-0 checked:border-blue-600"/>
-                                                <label for="toggle-rules" class="toggle-label block overflow-hidden h-5 rounded-full bg-slate-300 cursor-pointer"></label>
-                                            </div>
-                                            <span class="text-sm text-slate-500">Tampilkan Panduan</span>
-                                        </div>
-                                        <div class="border border-slate-200 rounded-xl overflow-hidden">
-                                            <div class="bg-slate-50 border-b border-slate-200 p-2 flex gap-2">
-                                                <button class="p-1 hover:bg-slate-200 rounded"><i data-feather="bold" class="w-4 h-4 text-slate-600"></i></button>
-                                                <button class="p-1 hover:bg-slate-200 rounded"><i data-feather="italic" class="w-4 h-4 text-slate-600"></i></button>
-                                                <button class="p-1 hover:bg-slate-200 rounded"><i data-feather="underline" class="w-4 h-4 text-slate-600"></i></button>
-                                            </div>
-                                            <textarea id="rules-content" class="w-full p-4 text-sm outline-none h-64" placeholder="Tulis panduan ujian disini..."></textarea>
-                                        </div>
-                                        <div class="text-right pt-4"><button onclick="saveRules()" class="bg-blue-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-blue-700 flex items-center gap-2 ml-auto"><i data-feather="save" class="w-4 h-4"></i> Simpan</button></div>
-                                    </div>
-
-                                    <!-- 4. TAB LAINNYA (LOGO) -->
+                                    <!-- 3. TAB LAINNYA (MERGED: LOGO + SCHOOL + RULES) -->
                                     <div id="set-content-others" class="settings-content hidden-view">
-                                        <h4 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-4 mb-6">Logo Aplikasi</h4>
-                                        <div class="space-y-6 max-w-2xl">
-                                            <div>
-                                                <label class="block text-sm font-bold text-slate-700 mb-2">Logo Utama</label>
-                                                <div class="flex items-start gap-4">
-                                                    <div class="h-20 w-20 bg-slate-50 border border-dashed border-slate-300 rounded-xl flex items-center justify-center overflow-hidden relative group">
-                                                        <img id="preview-logo-upload" src="" class="h-full w-full object-contain hidden">
-                                                        <i data-feather="image" class="text-slate-300 w-8 h-8" id="preview-logo-placeholder"></i>
-                                                    </div>
-                                                    <div class="flex-grow">
-                                                        <div class="flex border border-slate-300 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-blue-500">
-                                                            <label class="bg-slate-50 border-r px-4 py-2.5 text-sm font-bold text-slate-600 cursor-pointer hover:bg-slate-100 transition">
-                                                                Telusuri... <input type="file" class="hidden" accept="image/*" onchange="handleLogoUpload(this)">
-                                                            </label>
-                                                            <input type="text" class="flex-grow px-4 py-2.5 text-sm text-slate-500 outline-none bg-white" placeholder="Tidak ada berkas dipilih." readonly id="filename-logo">
-                                                        </div>
-                                                        <p class="text-[10px] text-slate-400 mt-2 font-medium">* Ukuran maks 100KB. Format PNG/JPG.</p>
-                                                    </div>
+                                        <!-- Logo Section -->
+                                        <div class="mb-10">
+                                            <h4 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-4 mb-6">Logo Aplikasi</h4>
+                                            <div class="flex gap-6 items-start">
+                                                <div class="h-20 w-20 bg-white border rounded-xl flex items-center justify-center overflow-hidden shadow-sm"><img id="preview-logo-upload" src="" class="h-full w-full object-contain hidden"><i data-feather="image" class="text-slate-300" id="preview-logo-placeholder"></i></div>
+                                                <div class="flex-grow">
+                                                    <div class="flex border rounded-lg overflow-hidden mb-2"><label class="bg-slate-50 border-r px-4 py-2 text-sm font-bold text-slate-600 cursor-pointer hover:bg-slate-100">Upload <input type="file" class="hidden" accept="image/*" onchange="handleLogoUpload(this)"></label><input class="flex-grow px-4 text-sm text-slate-500 bg-white" placeholder="No file" id="filename-logo" readonly></div>
+                                                    <div class="flex gap-2"><button onclick="saveLogoLocal()" class="bg-blue-600 text-white px-4 py-1.5 rounded text-xs font-bold">Simpan Logo</button><button onclick="resetLogo()" class="bg-red-100 text-red-600 px-4 py-1.5 rounded text-xs font-bold">Reset</button></div>
                                                 </div>
                                             </div>
-                                            <div class="bg-amber-50 text-amber-700 px-4 py-3 rounded-xl text-xs font-bold border border-amber-100 flex items-center gap-2">
-                                                <i data-feather="info" class="w-4 h-4"></i> Bersihkan cache browser untuk melihat perubahan logo secara instan!
+                                        </div>
+
+                                        <!-- School Info Section -->
+                                        <div class="mb-10">
+                                            <h4 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-4 mb-6">Informasi Sekolah</h4>
+                                            <div class="space-y-4 max-w-2xl">
+                                                <div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Nama Sekolah</label><input id="sch-name" class="w-full border p-2 rounded-lg text-sm" value="SMA NEGERI"></div>
+                                                <div><label class="block text-xs font-bold text-slate-500 uppercase mb-1">Alamat</label><textarea id="sch-addr" class="w-full border p-2 rounded-lg text-sm" rows="2"></textarea></div>
+                                                <button onclick="saveSchoolInfo()" class="bg-slate-800 text-white px-6 py-2 rounded-lg text-sm font-bold">Simpan Info</button>
                                             </div>
-                                            <div class="flex justify-end gap-3 pt-4">
-                                                <button onclick="resetLogo()" class="px-5 py-2.5 bg-red-50 text-red-600 text-sm font-bold rounded-xl hover:bg-red-100 transition flex items-center gap-2"><i data-feather="rotate-ccw" class="w-4 h-4"></i> Reset</button>
-                                                <button onclick="saveLogoLocal()" class="px-5 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 transition flex items-center gap-2 shadow-lg shadow-blue-200"><i data-feather="save" class="w-4 h-4"></i> Simpan</button>
-                                            </div>
+                                        </div>
+
+                                        <!-- Rules Section -->
+                                        <div>
+                                            <h4 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-4 mb-6">Panduan & Tata Tertib</h4>
+                                            <div class="flex items-center gap-3 mb-4"><label class="text-sm font-bold text-slate-600">Tampilkan?</label><div class="relative inline-block w-10 mr-2 align-middle select-none"><input type="checkbox" id="toggle-rules" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-slate-300 checked:right-0 checked:border-blue-600"/><label for="toggle-rules" class="toggle-label block overflow-hidden h-5 rounded-full bg-slate-300 cursor-pointer"></label></div></div>
+                                            <textarea id="rules-content" class="w-full border rounded-xl p-4 text-sm h-40" placeholder="Tulis panduan..."></textarea>
+                                            <button onclick="saveRules()" class="mt-4 bg-slate-800 text-white px-6 py-2 rounded-lg text-sm font-bold">Simpan Panduan</button>
                                         </div>
                                     </div>
 
-                                    <!-- 5. TAB TENTANG -->
+                                    <!-- 4. TAB TENTANG -->
                                     <div id="set-content-about" class="settings-content hidden-view text-center py-10">
                                         <div class="mb-6"><div class="h-20 w-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mx-auto flex items-center justify-center text-white shadow-xl shadow-blue-200"><i data-feather="command" class="w-10 h-10"></i></div></div>
                                         <h2 class="text-2xl font-extrabold text-slate-800 mb-1">My Exams</h2>
                                         <p class="text-slate-400 font-medium text-sm mb-8">Version 5.5.0 (Pro)</p>
-                                        <p class="text-sm text-slate-600 max-w-md mx-auto leading-relaxed mb-8">My Exams adalah aplikasi CBT berbasis web yang memiliki beragam tipe soal. Aplikasi ini mengutamakan fitur pengelolaan ujian dengan mudah dan cepat karena terdapat fitur kolaborasi antar pengelola ujian.</p>
-                                        <div class="text-xs font-bold text-slate-400 uppercase mb-4">Kontak Pengembang</div>
                                         <div class="flex justify-center gap-4">
                                             <a href="#" class="p-3 bg-green-100 text-green-600 rounded-full hover:bg-green-200 transition"><i data-feather="message-circle" class="w-5 h-5"></i></a>
                                             <a href="#" class="p-3 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200 transition"><i data-feather="send" class="w-5 h-5"></i></a>
-                                            <a href="#" class="p-3 bg-slate-100 text-slate-600 rounded-full hover:bg-slate-200 transition"><i data-feather="mail" class="w-5 h-5"></i></a>
                                         </div>
                                     </div>
 
@@ -348,14 +330,10 @@
             if(savedLogo) applyLogo(savedLogo);
             setInterval(() => { const now = new Date(); document.getElementById('digital-clock').textContent = now.toLocaleTimeString(); }, 1000);
             
-            // Load School Info
             if(localStorage.getItem('school_info')) {
                 const si = JSON.parse(localStorage.getItem('school_info'));
                 document.getElementById('sch-name').value = si.name;
-                document.getElementById('sch-level').value = si.level;
                 document.getElementById('sch-addr').value = si.addr;
-                document.getElementById('sch-email').value = si.email;
-                document.getElementById('sch-web').value = si.web;
             }
         }
         init();
@@ -392,7 +370,7 @@
             if(!img || img.includes(window.location.href)) return alert("Pilih gambar logo terlebih dahulu.");
             localStorage.setItem('school_logo_url_base64', img);
             applyLogo(img);
-            alert("Logo berhasil disimpan secara lokal!");
+            alert("Logo berhasil disimpan!");
         }
 
         function resetLogo() { localStorage.removeItem('school_logo_url_base64'); location.reload(); }
@@ -403,20 +381,11 @@
         }
         
         function saveSchoolInfo() {
-            const info = {
-                name: document.getElementById('sch-name').value,
-                level: document.getElementById('sch-level').value,
-                addr: document.getElementById('sch-addr').value,
-                email: document.getElementById('sch-email').value,
-                web: document.getElementById('sch-web').value
-            };
+            const info = { name: document.getElementById('sch-name').value, addr: document.getElementById('sch-addr').value };
             localStorage.setItem('school_info', JSON.stringify(info));
-            alert("Informasi Sekolah Tersimpan!");
+            alert("Tersimpan!");
         }
-
-        function saveRules() {
-            alert("Panduan tersimpan (Simulasi)");
-        }
+        function saveRules() { alert("Panduan tersimpan!"); }
 
         // --- NAVIGATION ---
         const nav = (id) => {
@@ -425,14 +394,11 @@
             document.getElementById('student-header').style.display = id === 'welcome' ? 'flex' : 'none';
         };
 
-        function toggleSidebar() {
-            const sb = document.getElementById('admin-sidebar');
-            sb.classList.toggle('w-64'); sb.classList.toggle('w-0'); sb.classList.toggle('px-0'); sb.classList.toggle('overflow-hidden');
-        }
+        function toggleSidebar() { const sb = document.getElementById('admin-sidebar'); sb.classList.toggle('w-64'); sb.classList.toggle('w-0'); sb.classList.toggle('px-0'); sb.classList.toggle('overflow-hidden'); }
         function toggleFullScreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{}); else if (document.exitFullscreen) document.exitFullscreen(); }
         function toggleProfileMenu() { document.getElementById('profile-menu').classList.toggle('hidden'); }
 
-        // --- ADMIN LOGIC ---
+        // --- ADMIN ---
         function showAdminLogin() { document.getElementById('modal-login').classList.remove('hidden-view'); }
         function checkAdminPin() {
             if(document.getElementById('pin-input').value === ADMIN_PIN) {
@@ -447,18 +413,18 @@
             document.querySelectorAll('.nav-item').forEach(e => { e.classList.remove('bg-blue-50', 'text-blue-700'); });
             document.getElementById(`nav-${tab}`).classList.add('bg-blue-50', 'text-blue-700');
             if(tab === 'questions') renderMapelList();
-            if(tab === 'settings') switchSettingsTab('others'); 
+            if(tab === 'settings') switchSettingsTab('profile'); 
         }
 
         // --- DASHBOARD ---
         function updateDashboardStats() { document.getElementById('stat-total-students').textContent = adminDataCache.length; document.getElementById('stat-total-exams').textContent = Object.keys(db).length; }
-        function generateNewToken() { const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; let result = ""; for(let i=0; i<6; i++) result += chars.charAt(Math.floor(Math.random() * chars.length)); document.getElementById('dash-token').textContent = result; localStorage.setItem('cbt_token_dash', result); }
-        function resetTrafficStats() { alert("Statistik trafik di-reset."); }
+        function generateNewToken() { const chars = "ABCDEF0123456789"; let result = ""; for(let i=0; i<6; i++) result += chars.charAt(Math.floor(Math.random() * chars.length)); document.getElementById('dash-token').textContent = result; localStorage.setItem('cbt_token_dash', result); }
+        function resetTrafficStats() { document.getElementById('stat-socket').textContent='0'; document.getElementById('stat-http').textContent='0'; }
 
         // --- DATA ---
         async function fetchAdminData() {
             const btn = document.getElementById('btn-refresh'); const icon = btn.querySelector('i'); icon.classList.add('animate-spin');
-            if(GOOGLE_SCRIPT_URL) { try { const res = await fetch(GOOGLE_SCRIPT_URL); const data = await res.json(); if(data.students) adminDataCache = data.students; if(data.config) { config.classes = data.config.classList; config.majors = data.config.majorList; updateDropdowns(); } } catch(e) {} }
+            if(GOOGLE_SCRIPT_URL) { try { const res = await fetch(GOOGLE_SCRIPT_URL); const data = await res.json(); if(data.students) adminDataCache = data.students; } catch(e) {} }
             renderAdminTables(); updateDashboardStats(); icon.classList.remove('animate-spin');
         }
         function renderAdminTables() {
@@ -469,7 +435,7 @@
         }
         function downloadExcel() { if(adminDataCache.length === 0) return alert("Tidak ada data."); const exportData = adminDataCache.map(s => ({ "Waktu": new Date(s.timestamp).toLocaleString(), "Nama": s.nama, "Kelas": s.kelas, "Jurusan": s.jurusan, "Mapel": s.mapel, "Nilai": s.nilaiAkhir })); const wb = XLSX.utils.book_new(); const ws = XLSX.utils.json_to_sheet(exportData); XLSX.utils.book_append_sheet(wb, ws, "Hasil Ujian"); XLSX.writeFile(wb, "Rekap_Nilai.xlsx"); }
 
-        // --- EXAM CORE ---
+        // --- EXAM ---
         function startQuiz() {
             const name = document.getElementById('input-nama').value; const cls = document.getElementById('input-kelas').value; const mjr = document.getElementById('input-jurusan').value; const token = document.getElementById('input-token').value.toUpperCase();
             if(!name || !cls || !mjr || !token) return alert("Lengkapi Data!");
@@ -487,15 +453,7 @@
             document.getElementById('progress-bar').style.width = `${((currentQ+1)/currentQuestions.length)*100}%`;
             const cont = document.getElementById('options-container'); cont.innerHTML = '';
             if (type === 'essay') { cont.innerHTML = `<textarea class="w-full border p-3 rounded-xl" rows="5" placeholder="Jawab..." onchange="userAnswers[currentQ]=this.value">${userAnswers[currentQ] || ''}</textarea>`; } 
-            else {
-                q.options.forEach((opt, i) => {
-                    const isSel = userAnswers[currentQ] === i; const btn = document.createElement('button');
-                    btn.className = `w-full text-left p-4 rounded-xl border transition flex gap-3 items-center ${isSel ? 'border-blue-600 bg-blue-50 text-blue-800' : 'hover:bg-slate-50'}`;
-                    btn.onclick = () => { userAnswers[currentQ] = i; renderQ(); };
-                    btn.innerHTML = `<span class="font-bold text-sm ${isSel?'text-blue-600':'text-slate-400'}">${String.fromCharCode(65+i)}.</span> <span>${opt}</span>`;
-                    cont.appendChild(btn);
-                });
-            }
+            else { q.options.forEach((opt, i) => { const isSel = userAnswers[currentQ] === i; const btn = document.createElement('button'); btn.className = `w-full text-left p-4 rounded-xl border transition flex gap-3 items-center ${isSel ? 'border-blue-600 bg-blue-50 text-blue-800' : 'hover:bg-slate-50'}`; btn.onclick = () => { userAnswers[currentQ] = i; renderQ(); }; btn.innerHTML = `<span class="font-bold text-sm ${isSel?'text-blue-600':'text-slate-400'}">${String.fromCharCode(65+i)}.</span> <span>${opt}</span>`; cont.appendChild(btn); }); }
             document.getElementById('btn-prev').disabled = currentQ===0;
             const isLast = currentQ===currentQuestions.length-1;
             document.getElementById('btn-next').classList.toggle('hidden', isLast);
@@ -512,7 +470,7 @@
         }
         function startTimer() { timer = setInterval(() => { const diff = new Date() - startTime; const m = Math.floor(diff/60000).toString().padStart(2,'0'); const s = Math.floor((diff%60000)/1000).toString().padStart(2,'0'); document.getElementById('timer-display').textContent = `${m}:${s}`; }, 1000); }
         
-        // Student & Q CRUD
+        // Local CRUD
         function openStudentModal(idx=null) { editingStudentIdx = idx; document.getElementById('modal-student').classList.remove('hidden-view'); if(idx !== null) { const s = adminDataCache[idx]; document.getElementById('std-name').value=s.nama; } else { document.getElementById('std-name').value=''; } }
         function closeStudentModal() { document.getElementById('modal-student').classList.add('hidden-view'); }
         function saveStudent() { closeStudentModal(); renderAdminTables(); }
