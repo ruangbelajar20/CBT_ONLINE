@@ -57,38 +57,54 @@
         .editor-content-area u { text-decoration: underline; }
         .editor-content-area img { max-width: 100%; height: auto; border-radius: 8px; margin: 10px 0; }
 
-        /* Card Print Style */
+        /* Card Print Style (Optimized for A4) */
         .exam-card { 
             width: 100%; 
-            max-width: 700px; /* Lebar ditambah */
             border: 2px solid #000; 
             padding: 15px; 
             background: white; 
             font-family: 'Times New Roman', serif; 
             margin-bottom: 20px; 
-            page-break-inside: avoid;
+            page-break-inside: avoid; /* Mencegah kartu terpotong */
+            box-sizing: border-box;
         }
         .exam-card-header { 
             display: flex; 
             border-bottom: 3px double #000; 
             padding-bottom: 10px; 
-            margin-bottom: 15px; 
+            margin-bottom: 10px; 
             align-items: center; 
             justify-content: center; 
             text-align: center; 
         }
-        .exam-card-logo { width: 70px; height: 70px; object-fit: contain; margin-right: 20px; }
+        .exam-card-logo { width: 60px; height: 60px; object-fit: contain; margin-right: 15px; }
         .exam-card-title { font-weight: bold; font-size: 16px; text-align: center; margin-bottom: 5px; text-transform: uppercase; text-decoration: underline; }
-        .exam-card-subtitle { font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 20px; text-transform: uppercase; }
-        .exam-card-row { display: flex; margin-bottom: 8px; font-size: 14px; font-weight: bold; }
-        .exam-card-label { width: 140px; }
+        .exam-card-subtitle { font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 15px; text-transform: uppercase; }
+        .exam-card-row { display: flex; margin-bottom: 6px; font-size: 13px; font-weight: bold; }
+        .exam-card-label { width: 130px; }
         .exam-card-val { flex: 1; }
         
         @media print {
+            @page { size: A4; margin: 10mm; }
             body * { visibility: hidden; }
             #card-preview-area, #card-preview-area * { visibility: visible; }
-            #card-preview-area { position: absolute; left: 0; top: 0; width: 100%; }
-            .exam-card { max-width: 100%; width: 100%; page-break-after: always; margin: 0; border: 1px solid #000; }
+            #card-preview-area { 
+                position: absolute; 
+                left: 0; 
+                top: 0; 
+                width: 100%; 
+                display: grid;
+                grid-template-columns: 1fr 1fr; /* 2 Kolom untuk hemat kertas */
+                gap: 15px;
+            }
+            .exam-card { 
+                margin: 0; 
+                border: 1px solid #000; 
+                width: 100%;
+                max-width: none;
+            }
+            /* Hilangkan elemen yang tidak perlu saat print */
+            button { display: none; }
         }
     </style>
 </head>
@@ -417,6 +433,10 @@
                                                 <input id="card-header-2" class="w-full border p-2 rounded text-sm font-bold" value="SMA NEGERI CONTOH" oninput="saveCardSettings(); renderCardPreview()">
                                                 <p class="text-[10px] text-slate-400 mt-1 italic">*Default: Mengambil dari Info Sekolah</p>
                                             </div>
+                                            <div>
+                                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Header Baris 3 (Alamat)</label>
+                                                <textarea id="card-header-3" class="w-full border p-2 rounded text-sm font-bold" rows="2" oninput="saveCardSettings(); renderCardPreview()"></textarea>
+                                            </div>
                                             <hr class="border-slate-200 my-2">
                                             <div>
                                                 <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Judul Kartu</label>
@@ -658,12 +678,14 @@
             const conf = JSON.parse(localStorage.getItem('cbt_card_config') || '{}');
             document.getElementById('card-header-1').value = conf.h1 || 'PELAKSANA UJIAN SEKOLAH';
             
-            // Auto load school name if empty in config
-            if(!conf.h2 && localStorage.getItem('school_info')) {
+            // Auto load school name and address if empty in config
+            if(localStorage.getItem('school_info')) {
                 const si = JSON.parse(localStorage.getItem('school_info'));
-                document.getElementById('card-header-2').value = si.name || 'NAMA SEKOLAH';
+                document.getElementById('card-header-2').value = conf.h2 || si.name || 'NAMA SEKOLAH';
+                document.getElementById('card-header-3').value = conf.h3 || si.addr || 'Alamat Sekolah';
             } else {
                 document.getElementById('card-header-2').value = conf.h2 || 'NAMA SEKOLAH';
+                document.getElementById('card-header-3').value = conf.h3 || 'Alamat Sekolah';
             }
             
             document.getElementById('card-title').value = conf.title || 'KARTU PESERTA';
@@ -702,6 +724,7 @@
             const config = {
                 h1: document.getElementById('card-header-1').value,
                 h2: document.getElementById('card-header-2').value,
+                h3: document.getElementById('card-header-3').value, // Save Address
                 title: document.getElementById('card-title').value,
                 subtitle: document.getElementById('card-subtitle').value
             };
@@ -724,6 +747,7 @@
             const conf = JSON.parse(localStorage.getItem('cbt_card_config') || '{}');
             const txtH1 = conf.h1 || 'PELAKSANA UJIAN SEKOLAH';
             const txtH2 = conf.h2 || schInfo.name || 'NAMA SEKOLAH';
+            const txtH3 = conf.h3 || schInfo.addr || 'Alamat Sekolah'; // Load Address
             const txtTitle = conf.title || 'KARTU PESERTA';
             const txtSubtitle = conf.subtitle || 'PENILAIAN AKHIR SEMESTER';
 
@@ -736,7 +760,7 @@
                         <div style="flex-grow:1">
                             <div style="font-size:16px; font-weight:bold">${txtH1}</div>
                             <div style="font-size:18px; font-weight:bold; margin: 4px 0;">${txtH2}</div>
-                            <div style="font-size:12px">${schInfo.addr || 'Alamat Sekolah'}</div>
+                            <div style="font-size:12px">${txtH3}</div>
                         </div>
                     </div>
                     <div class="exam-card-title">${txtTitle}</div>
