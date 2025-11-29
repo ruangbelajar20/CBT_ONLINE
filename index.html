@@ -8,6 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
+    <!-- TinyMCE Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js" referrerpolicy="origin"></script>
+
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #2563eb; }
         
@@ -64,6 +67,10 @@
         .sidebar-collapsed { width: 5rem !important; }
         .sidebar-collapsed .nav-text, .sidebar-collapsed .nav-header, .sidebar-collapsed #sidebar-logo { display: none; }
         .sidebar-collapsed #sidebar-icon-only { display: flex !important; }
+
+        /* TinyMCE Z-Index Fix for Modals */
+        .tox-tinymce-aux { z-index: 99999 !important; }
+        .tox-tinymce { border-radius: 0.75rem !important; border-color: #e2e8f0 !important; }
     </style>
 </head>
 <body class="h-screen overflow-hidden flex flex-col bg-blue-600">
@@ -126,7 +133,7 @@
                     <div class="max-w-4xl mx-auto bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
                         <div class="mb-6 flex justify-between items-center"><span class="bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm shadow-blue-200">SOAL NO <span id="q-num">1</span></span><span id="q-type-badge" class="text-xs font-bold text-slate-400 uppercase">Pilihan Ganda</span></div>
                         <div id="q-media" class="mb-6 hidden rounded-xl overflow-hidden border border-slate-100"></div>
-                        <h2 id="q-text" class="text-xl md:text-2xl font-semibold text-slate-800 mb-8 leading-relaxed">Pertanyaan...</h2>
+                        <div id="q-text" class="prose max-w-none text-slate-800 mb-8 leading-relaxed">Pertanyaan...</div>
                         <div id="options-container" class="space-y-3"></div>
                     </div>
                  </div>
@@ -308,7 +315,8 @@
                                         <div id="sub-rules" class="sub-tab-content hidden">
                                             <h4 class="text-lg font-bold text-slate-800 mb-4">Panduan & Tata Tertib</h4>
                                             <div class="flex items-center gap-3 mb-4"><label class="text-sm font-bold text-slate-600">Tampilkan?</label><div class="relative inline-block w-10 mr-2 align-middle select-none"><input type="checkbox" id="toggle-rules" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-slate-300 checked:right-0 checked:border-blue-600"/><label for="toggle-rules" class="toggle-label block overflow-hidden h-5 rounded-full bg-slate-300 cursor-pointer"></label></div></div>
-                                            <textarea id="rules-content" class="w-full border rounded-xl p-4 text-sm h-40" placeholder="Tulis panduan..."></textarea>
+                                            <!-- TinyMCE Applied here via ID -->
+                                            <textarea id="rules-content" class="w-full border rounded-xl p-4 text-sm h-64" placeholder="Tulis panduan..."></textarea>
                                             <button onclick="saveRules()" class="mt-4 bg-slate-800 text-white px-6 py-2 rounded-lg text-sm font-bold">Simpan Panduan</button>
                                         </div>
                                     </div>
@@ -336,7 +344,24 @@
     <div id="modal-login" class="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4 hidden-view backdrop-blur-sm"><div class="bg-white p-8 rounded-2xl shadow-2xl w-80 text-center"><h3 class="font-bold text-lg mb-6">Admin Login</h3><input type="password" id="pin-input" class="w-full text-center text-3xl font-bold tracking-widest border-b-2 py-2 outline-none mb-8" maxlength="4"><div class="flex gap-2"><button onclick="document.getElementById('modal-login').classList.add('hidden-view')" class="flex-1 py-2 bg-slate-100 rounded font-bold text-slate-500">Batal</button><button onclick="checkAdminPin()" class="flex-1 py-2 bg-blue-600 text-white rounded font-bold">Masuk</button></div></div></div>
     <div id="modal-license-update" class="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4 hidden-view backdrop-blur-sm"><div class="bg-white rounded-2xl p-8 w-full max-w-2xl shadow-2xl"><div class="flex justify-between items-center mb-4"><h3 class="font-bold text-xl text-slate-800">Update Serial Number</h3><button onclick="document.getElementById('modal-license-update').classList.add('hidden-view')" class="text-slate-400 hover:text-red-500"><i data-feather="x"></i></button></div><div class="bg-slate-100 border border-slate-200 rounded-lg p-4 mb-6"><p class="text-center font-bold text-slate-600 mb-2">Application Key!</p><textarea readonly class="w-full bg-white border border-slate-200 rounded p-2 text-xs font-mono text-slate-500 h-24 resize-none outline-none">U2FsdGVkX1...</textarea></div><div class="mb-6"><textarea id="input-serial" class="w-full border border-slate-300 rounded-lg p-3 text-sm h-24 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Masukan serial number!"></textarea></div><div class="flex justify-end gap-2"><button onclick="document.getElementById('modal-license-update').classList.add('hidden-view')" class="px-4 py-2 bg-slate-100 text-slate-600 font-bold rounded-lg hover:bg-slate-200">Tutup</button><button onclick="alert('Serial Number Berhasil Diupdate!')" class="px-4 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700">Update dan Verifikasi</button></div></div></div>
     <div id="modal-student" class="fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center hidden-view"><div class="bg-white p-6 rounded-xl w-96"><h3 class="font-bold mb-4" id="student-modal-title">Peserta</h3><div class="space-y-3"><input id="std-name" class="w-full border p-2 rounded" placeholder="Nama"><select id="std-class" class="w-full border p-2 rounded"></select><select id="std-major" class="w-full border p-2 rounded"></select><input id="std-score" type="number" class="w-full border p-2 rounded" placeholder="Nilai"></div><div class="mt-4 flex justify-end gap-2"><button onclick="closeStudentModal()" class="px-4 py-2 text-slate-500">Batal</button><button onclick="saveStudent()" class="px-4 py-2 bg-blue-600 text-white rounded">Simpan</button></div></div></div>
-    <div id="modal-question" class="fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center hidden-view"><div class="bg-white p-6 rounded-xl w-[600px] h-[80vh] flex flex-col"><textarea id="ed-q" class="w-full border p-3 rounded-xl h-24 mb-3 text-sm" placeholder="Pertanyaan"></textarea><div id="ed-opts-container" class="flex-grow overflow-y-auto space-y-2"></div><button onclick="addEditorOpt()" class="text-blue-600 text-sm font-bold mt-2 mb-4">+ Opsi</button><input id="ed-type" type="hidden"><input id="ed-media" type="hidden"><div class="pt-4 border-t flex justify-end gap-2"><button onclick="document.getElementById('modal-question').classList.add('hidden-view')" class="px-4 py-2 text-slate-500 font-bold">Batal</button><button onclick="saveQuestion()" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-bold">Simpan</button></div></div></div>
+    
+    <!-- QUESTION MODAL (UPDATED FOR TINYMCE) -->
+    <div id="modal-question" class="fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center hidden-view">
+        <div class="bg-white p-6 rounded-xl w-[900px] h-[90vh] flex flex-col">
+            <h3 class="font-bold text-lg mb-4 text-slate-800">Editor Soal</h3>
+            <!-- TinyMCE Applied here via ID ed-q -->
+            <textarea id="ed-q" class="w-full border p-3 rounded-xl h-64 mb-3 text-sm" placeholder="Pertanyaan"></textarea>
+            
+            <div id="ed-opts-container" class="flex-grow overflow-y-auto space-y-2 mt-4 p-2 border-t"></div>
+            <button onclick="addEditorOpt()" class="text-blue-600 text-sm font-bold mt-2 mb-4">+ Opsi</button>
+            <input id="ed-type" type="hidden"><input id="ed-media" type="hidden">
+            <div class="pt-4 border-t flex justify-end gap-2">
+                <button onclick="document.getElementById('modal-question').classList.add('hidden-view')" class="px-4 py-2 text-slate-500 font-bold">Batal</button>
+                <button onclick="saveQuestion()" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-bold">Simpan</button>
+            </div>
+        </div>
+    </div>
+    
     <div id="modal-subject" class="fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center hidden-view"><div class="bg-white p-6 rounded w-80"><input id="new-token" class="w-full border p-2 mb-2 uppercase" placeholder="TOKEN"><input id="new-mapel" class="w-full border p-2 mb-4" placeholder="Mapel"><button onclick="saveNewSubject()" class="w-full bg-blue-600 text-white py-2 rounded font-bold">Simpan</button><button onclick="document.getElementById('modal-subject').classList.add('hidden-view')" class="w-full mt-2 text-slate-500">Batal</button></div></div>
 
     <script>
@@ -365,7 +390,7 @@
             if(localStorage.getItem('school_info')) { 
                 const si = JSON.parse(localStorage.getItem('school_info')); 
                 if(document.getElementById('sch-name')) document.getElementById('sch-name').value = si.name || ''; 
-                if(document.getElementById('sch-level')) document.getElementById('sch-level').value = si.level || ''; // Load Level
+                if(document.getElementById('sch-level')) document.getElementById('sch-level').value = si.level || ''; 
                 if(document.getElementById('sch-addr')) document.getElementById('sch-addr').value = si.addr || ''; 
                 if(document.getElementById('sch-email')) document.getElementById('sch-email').value = si.email || ''; 
                 if(document.getElementById('sch-web')) document.getElementById('sch-web').value = si.web || ''; 
@@ -378,6 +403,16 @@
                 adminDataCache = JSON.parse(localStorage.getItem('cbt_admin_cache'));
                 updateDashboardStats();
             }
+
+            // INIT TINYMCE
+            tinymce.init({
+                selector: '#rules-content, #ed-q',
+                height: 300,
+                menubar: 'edit view insert format table',
+                plugins: 'link image code table lists',
+                toolbar: 'fullscreen | fontfamily fontsize | bold italic underline strikethrough | alignleft aligncenter alignright | bullist numlist | link image | table',
+                dropdown_container_body: true // helps with modal z-index
+            });
         }
         init();
 
@@ -478,21 +513,25 @@
             }
         }
         
-        // UPDATED SAVE SCHOOL INFO FUNCTION
         function saveSchoolInfo() {
             const info = { 
                 name: document.getElementById('sch-name').value, 
-                level: document.getElementById('sch-level').value, // Save Level
+                level: document.getElementById('sch-level').value, 
                 addr: document.getElementById('sch-addr').value,
                 email: document.getElementById('sch-email').value,
                 web: document.getElementById('sch-web').value
             };
             localStorage.setItem('school_info', JSON.stringify(info));
-            // Update UI Header immediately
             if(document.getElementById('school-name-display')) document.getElementById('school-name-display').textContent = info.name || 'CBT ONLINE';
             alert("Informasi Sekolah Tersimpan!");
         }
-        function saveRules() { alert("Panduan tersimpan!"); }
+        
+        // UPDATED SAVE RULES (Use TinyMCE)
+        function saveRules() { 
+            const content = tinymce.get('rules-content').getContent();
+            // console.log("Rules Saved:", content);
+            alert("Panduan tersimpan (Visual Editor)!"); 
+        }
 
         // --- NAVIGATION ---
         const nav = (id) => {
@@ -582,7 +621,12 @@
         }
         function renderQ() {
             const q = currentQuestions[currentQ]; const type = q.type || 'pg';
-            document.getElementById('q-num').textContent = currentQ+1; document.getElementById('q-text').textContent = q.question; document.getElementById('q-type-badge').textContent = type === 'pg' ? 'Pilihan Ganda' : 'Essay';
+            document.getElementById('q-num').textContent = currentQ+1; 
+            
+            // Render HTML content for question text since we use TinyMCE
+            document.getElementById('q-text').innerHTML = q.question; 
+            
+            document.getElementById('q-type-badge').textContent = type === 'pg' ? 'Pilihan Ganda' : 'Essay';
             document.getElementById('progress-bar').style.width = `${((currentQ+1)/currentQuestions.length)*100}%`;
             const cont = document.getElementById('options-container'); cont.innerHTML = '';
             if (type === 'essay') { cont.innerHTML = `<textarea class="w-full border p-3 rounded-xl" rows="5" placeholder="Jawab..." onchange="userAnswers[currentQ]=this.value">${userAnswers[currentQ] || ''}</textarea>`; } 
@@ -611,13 +655,43 @@
         function renderMapelList() { const l = document.getElementById('mapel-list'); l.innerHTML = ''; Object.keys(db).forEach(k => { const d = document.createElement('div'); d.className = "p-3 border rounded cursor-pointer hover:bg-slate-50 mb-2"; d.innerHTML = `<b>${db[k].name}</b> <span class="text-xs text-slate-400">${k}</span>`; d.onclick = () => { activeTokenAdmin=k; renderSoalList(); }; l.appendChild(d); }); }
         function openAddSubject() { document.getElementById('modal-subject').classList.remove('hidden-view'); }
         function saveNewSubject() { const t = document.getElementById('new-token').value.toUpperCase(); const n = document.getElementById('new-mapel').value; if(t&&n) { db[t] = {name:n, questions:[]}; localStorage.setItem('cbt_db_v4', JSON.stringify(db)); document.getElementById('modal-subject').classList.add('hidden-view'); renderMapelList(); } }
-        function renderSoalList() { const l = document.getElementById('soal-list'); l.innerHTML = ''; if(activeTokenAdmin && db[activeTokenAdmin]) { db[activeTokenAdmin].questions.forEach((q, i) => { const d = document.createElement('div'); d.className = "p-3 border rounded mb-2 bg-white"; d.innerHTML = `<p class="text-sm font-bold">${q.question}</p><div class="text-right text-xs mt-2"><button onclick="editQ(${i})" class="text-blue-500 mr-2">Edit</button><button onclick="delQ(${i})" class="text-red-500">Hapus</button></div>`; l.appendChild(d); }); } }
-        function openAddQuestion() { editingQIdx=null; document.getElementById('modal-question').classList.remove('hidden-view'); renderAnswerInput(); }
-        function editQ(i) { editingQIdx=i; document.getElementById('modal-question').classList.remove('hidden-view'); document.getElementById('ed-q').value=db[activeTokenAdmin].questions[i].question; renderAnswerInput(db[activeTokenAdmin].questions[i]); }
+        function renderSoalList() { const l = document.getElementById('soal-list'); l.innerHTML = ''; if(activeTokenAdmin && db[activeTokenAdmin]) { db[activeTokenAdmin].questions.forEach((q, i) => { const d = document.createElement('div'); d.className = "p-3 border rounded mb-2 bg-white"; d.innerHTML = `<div class="text-sm font-bold truncate">${q.question.replace(/<[^>]*>?/gm, '')}</div><div class="text-right text-xs mt-2"><button onclick="editQ(${i})" class="text-blue-500 mr-2">Edit</button><button onclick="delQ(${i})" class="text-red-500">Hapus</button></div>`; l.appendChild(d); }); } }
+        
+        function openAddQuestion() { 
+            editingQIdx=null; 
+            document.getElementById('modal-question').classList.remove('hidden-view'); 
+            // Reset TinyMCE
+            if(tinymce.get('ed-q')) tinymce.get('ed-q').setContent('');
+            renderAnswerInput(); 
+        }
+        
+        function editQ(i) { 
+            editingQIdx=i; 
+            document.getElementById('modal-question').classList.remove('hidden-view'); 
+            const questionData = db[activeTokenAdmin].questions[i];
+            // Set TinyMCE Content
+            if(tinymce.get('ed-q')) tinymce.get('ed-q').setContent(questionData.question);
+            renderAnswerInput(questionData); 
+        }
+        
         function delQ(i) { db[activeTokenAdmin].questions.splice(i,1); localStorage.setItem('cbt_db_v4', JSON.stringify(db)); renderSoalList(); }
-        function renderAnswerInput(data=null) { const c = document.getElementById('ed-opts-container'); c.innerHTML = ''; const opts = data ? data.options : ['', '', '', '']; opts.forEach((o, i) => { const d = document.createElement('div'); d.className = "flex gap-2 mb-1"; d.innerHTML = `<input type="radio" name="ans" ${data && data.answer==i?'checked':''}><input class="border p-1 w-full opt-val" value="${o}">`; c.appendChild(d); }); }
-        function addEditorOpt() { const d = document.createElement('div'); d.className = "flex gap-2 mb-1"; d.innerHTML = `<input type="radio" name="ans"><input class="border p-1 w-full opt-val">`; document.getElementById('ed-opts-container').appendChild(d); }
-        function saveQuestion() { const q = document.getElementById('ed-q').value; const opts = []; let ans = -1; document.querySelectorAll('.opt-val').forEach((el, i) => { opts.push(el.value); if(document.querySelectorAll('input[name="ans"]')[i].checked) ans = i; }); if(!q || ans === -1) return alert("Lengkapi soal"); const newQ = { id: Date.now(), type:'pg', question:q, options:opts, answer:ans, points:2.5 }; if(editingQIdx!==null) db[activeTokenAdmin].questions[editingQIdx] = newQ; else db[activeTokenAdmin].questions.push(newQ); localStorage.setItem('cbt_db_v4', JSON.stringify(db)); document.getElementById('modal-question').classList.add('hidden-view'); renderSoalList(); }
+        function renderAnswerInput(data=null) { const c = document.getElementById('ed-opts-container'); c.innerHTML = ''; const opts = data ? data.options : ['', '', '', '']; opts.forEach((o, i) => { const d = document.createElement('div'); d.className = "flex gap-2 mb-1"; d.innerHTML = `<input type="radio" name="ans" ${data && data.answer==i?'checked':''}><input class="border p-2 w-full rounded opt-val text-sm" value="${o}">`; c.appendChild(d); }); }
+        function addEditorOpt() { const d = document.createElement('div'); d.className = "flex gap-2 mb-1"; d.innerHTML = `<input type="radio" name="ans"><input class="border p-2 w-full rounded opt-val text-sm">`; document.getElementById('ed-opts-container').appendChild(d); }
+        
+        // UPDATED SAVE QUESTION (Use TinyMCE)
+        function saveQuestion() { 
+            const q = tinymce.get('ed-q').getContent(); // Get content from TinyMCE
+            const opts = []; let ans = -1; 
+            document.querySelectorAll('.opt-val').forEach((el, i) => { opts.push(el.value); if(document.querySelectorAll('input[name="ans"]')[i].checked) ans = i; }); 
+            if(!q || ans === -1) return alert("Lengkapi soal (Pastikan soal dan kunci jawaban terisi)"); 
+            
+            const newQ = { id: Date.now(), type:'pg', question:q, options:opts, answer:ans, points:2.5 }; 
+            if(editingQIdx!==null) db[activeTokenAdmin].questions[editingQIdx] = newQ; else db[activeTokenAdmin].questions.push(newQ); 
+            localStorage.setItem('cbt_db_v4', JSON.stringify(db)); 
+            document.getElementById('modal-question').classList.add('hidden-view'); 
+            renderSoalList(); 
+        }
+        
         function downloadTemplateWord() { alert("Template downloaded"); }
     </script>
 </body>
