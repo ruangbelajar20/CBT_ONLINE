@@ -109,7 +109,7 @@
         .exam-card-label { width: 40px; font-weight: bold; }
         .exam-card-val { flex: 1; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        /* --- PRINT OPTIMIZATION (3 Cols x 6 Rows) --- */
+        /* --- PRINT OPTIMIZATION (3 Cols x 6 Rows - CENTERED & SAFE) --- */
         @media print {
             @page { 
                 size: A4 portrait; 
@@ -124,7 +124,7 @@
                 position: absolute; 
                 left: 0; 
                 top: 0; 
-                width: 210mm; /* Full A4 Width */
+                width: 210mm; 
                 min-height: 297mm;
                 
                 display: grid;
@@ -134,7 +134,6 @@
                 column-gap: 5mm; 
                 row-gap: 5mm;
                 
-                /* CENTER Alignment */
                 justify-content: center;
                 align-content: start;
                 
@@ -199,7 +198,7 @@
         <!-- MAIN CONTENT -->
         <main class="flex-grow flex items-center justify-center p-4 overflow-hidden">
 
-            <!-- 1. WELCOME VIEW (LOGIN PESERTA - USERNAME & PASSWORD) -->
+            <!-- 1. WELCOME VIEW (LOGIN PESERTA) -->
             <div id="view-welcome" class="glass-card-login w-full max-w-md p-10 fade-in relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
                 <div class="text-center mb-8"><h2 class="text-3xl font-extrabold text-slate-800 mb-1">Login Peserta</h2><p class="text-slate-400 text-sm">Silakan masuk untuk memulai ujian</p></div>
@@ -232,7 +231,6 @@
 
             <!-- 2. PLAYING VIEW -->
             <div id="view-playing" class="w-full max-w-5xl h-full flex flex-col hidden-view fade-in bg-slate-50 rounded-2xl overflow-hidden shadow-2xl">
-                 <!-- ... (Playing view content same as before) ... -->
                  <div class="bg-white border-b px-6 py-4 flex justify-between items-center">
                     <div class="flex gap-4 items-center"><div class="h-10 w-10 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center font-bold shadow-sm" id="avatar-initial">U</div><div><h3 class="font-bold text-slate-800 text-sm" id="play-name">User</h3><p class="text-xs text-slate-500 font-medium" id="play-info">Info</p></div></div>
                     <div class="flex items-center gap-3"><span class="text-xs font-bold text-slate-400 uppercase hidden sm:inline">Sisa Waktu</span><div class="font-mono text-xl font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-lg border border-blue-100" id="timer-display">--:--</div></div>
@@ -295,7 +293,6 @@
                         <!-- PANEL: DASHBOARD -->
                         <div id="admin-panel-dashboard" class="admin-panel space-y-6">
                             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                <!-- ... (Stat Cards Same as Before) ... -->
                                 <div class="dash-stat-card col-span-2 relative overflow-hidden">
                                     <div class="absolute top-0 right-0 p-4 opacity-10"><i data-feather="activity" class="w-24 h-24 text-blue-600"></i></div>
                                     <div class="flex justify-between items-start mb-6 relative z-10"><div><h3 class="font-bold text-slate-700 text-lg">Trafik Monitor</h3><p class="text-xs text-slate-400">Statistik koneksi real-time</p></div><button onclick="resetTrafficStats()" class="text-xs border border-slate-200 rounded-lg px-3 py-1.5 bg-white text-slate-500 hover:bg-slate-50 hover:text-red-500 font-bold shadow-sm">Reset Data</button></div>
@@ -306,14 +303,12 @@
                                     <button onclick="generateNewToken()" class="mt-6 w-full bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold py-3 rounded-xl shadow-lg shadow-emerald-100 flex items-center justify-center gap-2"><i data-feather="refresh-cw" class="w-4 h-4"></i> Perbaharui Token</button>
                                 </div>
                             </div>
-                            <!-- Row 2: Stat Cards -->
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                 <div class="dash-stat-card"><p class="text-3xl font-bold text-slate-700">954</p><p class="text-xs text-slate-400 mt-1">Total Koneksi</p><div class="text-xs text-emerald-500 font-bold mt-2 flex items-center gap-1"><div class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div> 1 terhubung</div></div>
                                 <div class="dash-stat-card"><p class="text-3xl font-bold text-slate-700" id="stat-total-students">0</p><p class="text-xs text-slate-400 mt-1">Total Peserta</p><div class="text-xs text-emerald-500 font-bold mt-2 flex items-center gap-1"><div class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div> Online</div></div>
                                 <div class="dash-stat-card"><p class="text-3xl font-bold text-slate-700">1</p><p class="text-xs text-slate-400 mt-1">Total Pengawas</p><div class="text-xs text-emerald-500 font-bold mt-2 flex items-center gap-1"><div class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div> Online</div></div>
                                 <div class="dash-stat-card"><p class="text-3xl font-bold text-slate-700">4</p><p class="text-xs text-slate-400 mt-1">Total Pengelola</p><div class="text-xs text-emerald-500 font-bold mt-2 flex items-center gap-1"><div class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div> Online</div></div>
                             </div>
-
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div class="dash-stat-card"><p class="text-2xl font-bold text-slate-700" id="stat-total-classes">0</p><p class="text-xs text-slate-400">Total Kelas</p></div>
                                 <div class="dash-stat-card"><p class="text-2xl font-bold text-slate-700" id="stat-total-majors">0</p><p class="text-xs text-slate-400">Total Jurusan</p></div>
@@ -347,6 +342,7 @@
                                     <table class="w-full text-left modern-table relative">
                                         <thead class="bg-slate-50 text-xs font-bold text-slate-500 uppercase border-b sticky top-0 z-20">
                                             <tr>
+                                                <!-- FIX: Add Select All Checkbox -->
                                                 <th class="px-4 py-3"><input type="checkbox" id="select-all-students" onclick="toggleAllCheckboxes(this)"></th>
                                                 <th class="px-4 py-3 text-center">Aksi</th>
                                                 <th class="px-4 py-3">#</th>
@@ -468,33 +464,48 @@
                             </div>
                         </div>
 
-                        <!-- PANEL: SOAL (EDIT LIST, ADD, ETC) - New Feature 1 & 3 -->
+                        <!-- PANEL: LIST OF EXAMS (NEW - Feature 1) -->
                         <div id="admin-panel-questions" class="admin-panel hidden-view">
                             <div class="bg-white p-6 rounded-xl border border-slate-200 h-full flex flex-col shadow-sm">
                                 <div class="flex justify-between items-center mb-6">
-                                    <div><h3 class="font-bold text-xl text-slate-800">Bank Soal</h3></div>
+                                    <div><h3 class="font-bold text-xl text-slate-800">Daftar Ujian (Bank Soal)</h3></div>
                                     <div class="flex gap-2">
-                                        <button onclick="downloadTemplateWord()" class="border px-4 py-2 rounded-lg text-xs font-bold">Template Word</button>
-                                        <button onclick="openAddSubject()" class="bg-slate-800 text-white px-4 py-2 rounded-lg text-xs font-bold">+ Mapel</button>
+                                        <!-- Feature 2: New Buttons -->
+                                        <button onclick="downloadTemplateWord()" class="border px-4 py-2 rounded-lg text-xs font-bold hover:bg-slate-50 flex items-center gap-1"><i data-feather="file-text" class="w-3 h-3"></i> Template Word</button>
+                                        <button class="bg-green-600 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-1 hover:bg-green-700"><i data-feather="download" class="w-3 h-3"></i> Import Soal</button>
+                                        <button class="bg-orange-500 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-1 hover:bg-orange-600"><i data-feather="upload" class="w-3 h-3"></i> Export</button>
+                                        <button onclick="openAddSubject()" class="bg-slate-800 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-1 hover:bg-slate-900"><i data-feather="plus" class="w-3 h-3"></i> Tambah Ujian</button>
                                     </div>
                                 </div>
-                                <div class="flex-grow flex gap-4 overflow-hidden">
-                                    <div class="w-64 bg-slate-50 border rounded-xl p-4 overflow-y-auto custom-scrollbar" id="mapel-list"></div>
-                                    <div class="flex-grow border rounded-xl flex flex-col overflow-hidden relative">
-                                        <div id="soal-header" class="p-4 border-b flex justify-between items-center bg-white hidden z-10 shadow-sm">
-                                            <h4 class="font-bold text-blue-700 text-lg" id="active-mapel-title">Mapel</h4>
-                                            <!-- FEATURE 1: ADDED ACTIONS -->
-                                            <div class="flex gap-2">
-                                                <button class="text-xs border px-3 py-2 rounded-lg font-bold hover:bg-slate-50">Edit Kelas</button>
-                                                <button class="text-xs border px-3 py-2 rounded-lg font-bold hover:bg-slate-50">Edit Ruang</button>
-                                                <button onclick="openAddQuestion()" class="text-xs bg-indigo-600 text-white px-3 py-2 rounded-lg font-bold">+ Soal</button>
-                                                <!-- FEATURE 2: IMPORT EXPORT -->
-                                                <button class="text-xs bg-green-600 text-white px-3 py-2 rounded-lg font-bold"><i data-feather="download" class="w-3 h-3 inline"></i> Import</button>
-                                                <button class="text-xs bg-orange-500 text-white px-3 py-2 rounded-lg font-bold"><i data-feather="upload" class="w-3 h-3 inline"></i> Export</button>
-                                            </div>
+                                
+                                <div class="flex-grow flex flex-col gap-4 overflow-hidden" id="exam-list-container">
+                                    <!-- List of Exams will be rendered here -->
+                                    <!-- Example Item Structure -->
+                                    <!-- 
+                                    <div class="bg-slate-50 border rounded-xl p-4 flex justify-between items-center">
+                                        <div>
+                                            <h4 class="font-bold text-lg text-slate-700">BAHASA INDONESIA</h4>
+                                            <p class="text-xs text-slate-500">Token: BIND123 • 50 Soal • Kelas X</p>
                                         </div>
-                                        <div id="soal-list" class="flex-grow overflow-y-auto p-6 space-y-4 bg-slate-50/30 custom-scrollbar relative"></div>
-                                    </div>
+                                        <div class="flex gap-2">
+                                            <button class="px-3 py-1.5 bg-blue-100 text-blue-600 text-xs font-bold rounded hover:bg-blue-200">Edit Soal</button>
+                                            <button class="px-3 py-1.5 bg-slate-200 text-slate-600 text-xs font-bold rounded hover:bg-slate-300">Edit Peserta</button>
+                                            <button class="px-3 py-1.5 bg-slate-200 text-slate-600 text-xs font-bold rounded hover:bg-slate-300">Edit Ruang</button>
+                                            <button class="px-3 py-1.5 bg-red-100 text-red-600 text-xs font-bold rounded hover:bg-red-200">Hapus</button>
+                                        </div>
+                                    </div> 
+                                    -->
+                                </div>
+                                
+                                <!-- Hidden Detail View for specific exam questions -->
+                                <div id="exam-detail-view" class="hidden h-full flex flex-col">
+                                     <div class="flex items-center gap-3 mb-4 pb-2 border-b">
+                                         <button onclick="closeExamDetail()" class="p-1 hover:bg-slate-100 rounded"><i data-feather="arrow-left"></i></button>
+                                         <h4 class="font-bold text-lg text-blue-600" id="active-exam-title">Nama Mapel</h4>
+                                         <div class="flex-grow"></div>
+                                         <button onclick="openAddQuestion()" class="bg-indigo-600 text-white px-3 py-1.5 rounded text-xs font-bold">+ Tambah Soal Manual</button>
+                                     </div>
+                                     <div id="soal-list" class="flex-grow overflow-y-auto p-4 space-y-4 bg-slate-50/50 custom-scrollbar rounded-xl border"></div>
                                 </div>
                             </div>
                         </div>
@@ -672,15 +683,10 @@
                 dropdown.style.display = 'none';
             }
         }
-        
-        // ADDED: Toggle All Checkboxes
+
         function toggleAllCheckboxes(source) {
             const checkboxes = document.querySelectorAll('.student-checkbox');
             checkboxes.forEach(checkbox => checkbox.checked = source.checked);
-            // Trigger card preview update if we are in card view
-            if(!document.getElementById('view-admin-student-card').classList.contains('hidden-view')){
-                renderCardPreview();
-            }
         }
 
         // Action Handlers for Dropdown items
