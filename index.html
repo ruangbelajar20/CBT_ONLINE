@@ -20,7 +20,6 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
         .fade-in { animation: fadeIn 0.3s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .hidden-view { display: none !important; }
         
         /* Table Styles */
@@ -79,7 +78,7 @@
             overflow: hidden;
             background-image: radial-gradient(#f0f0f0 1px, transparent 1px);
             background-size: 10px 10px;
-            font-size: 10px; 
+            font-size: 8px; 
             box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
         }
         
@@ -93,65 +92,30 @@
         }
         .exam-card-logo { width: 24px; height: 24px; object-fit: contain; margin-right: 3px; }
         .exam-card-header-text { flex: 1; text-align: center; line-height: 1; overflow: hidden; }
-        .exam-card-h1 { font-size: 10px; font-weight: bold; margin-bottom: 1px; white-space: nowrap; }
-        .exam-card-h2 { font-size: 10px; font-weight: bold; margin-bottom: 1px; white-space: nowrap; }
-        .exam-card-h3 { font-size: 10px; white-space: nowrap; }
+        .exam-card-h1 { font-size: 6px; font-weight: bold; margin-bottom: 1px; white-space: nowrap; }
+        .exam-card-h2 { font-size: 7px; font-weight: bold; margin-bottom: 1px; white-space: nowrap; }
+        .exam-card-h3 { font-size: 5px; white-space: nowrap; }
         
         .exam-card-body { display: flex; gap: 4px; }
         .exam-card-photo-box { width: 1.5cm; height: 1.8cm; background: #eee; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .exam-card-photo-img { width: 100%; height: 100%; object-fit: cover; }
         .exam-card-info { flex: 1; overflow: hidden; }
 
-        .exam-card-title { font-weight: bold; font-size: 10px; text-align: center; margin-bottom: 1px; text-transform: uppercase; text-decoration: underline; }
-        .exam-card-subtitle { font-weight: bold; font-size: 8px; text-align: center; margin-bottom: 2px; text-transform: uppercase; }
+        .exam-card-title { font-weight: bold; font-size: 8px; text-align: center; margin-bottom: 1px; text-transform: uppercase; text-decoration: underline; }
+        .exam-card-subtitle { font-weight: bold; font-size: 6px; text-align: center; margin-bottom: 2px; text-transform: uppercase; }
         
-        .exam-card-row { display: flex; margin-bottom: 1px; font-size: 10px; line-height: 1.1; }
+        .exam-card-row { display: flex; margin-bottom: 1px; font-size: 7px; line-height: 1.1; }
         .exam-card-label { width: 40px; font-weight: bold; }
         .exam-card-val { flex: 1; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        /* --- PRINT OPTIMIZATION (3 Cols x 6 Rows - CENTERED & SAFE) --- */
+        /* --- PRINT OPTIMIZATION (3 Cols x 6 Rows) --- */
         @media print {
-            @page { 
-                size: A4 portrait; 
-                margin: 0; 
-            }
+            @page { size: A4 portrait; margin: 0; }
             body { margin: 0; padding: 0; background: white; -webkit-print-color-adjust: exact; }
             body * { visibility: hidden; }
-            
             #card-preview-area, #card-preview-area * { visibility: visible; }
-            
-            #card-preview-area { 
-                position: absolute; 
-                left: 0; 
-                top: 0; 
-                width: 210mm; 
-                min-height: 297mm;
-                
-                display: grid;
-                grid-template-columns: repeat(3, 6cm); 
-                grid-auto-rows: 4cm;
-                
-                column-gap: 5mm; 
-                row-gap: 5mm;
-                
-                justify-content: center;
-                align-content: start;
-                
-                padding-top: 1mm; 
-            }
-            
-            .exam-card { 
-                visibility: visible;
-                margin: 0; 
-                border: 1px solid #000; 
-                width: 6cm;
-                height: 4cm;
-                page-break-inside: avoid;
-                break-inside: avoid;
-                background-image: none !important;
-                box-shadow: none !important;
-            }
-            
+            #card-preview-area { position: absolute; left: 0; top: 0; width: 210mm; min-height: 297mm; display: grid; grid-template-columns: repeat(3, 6cm); grid-auto-rows: 4cm; column-gap: 5mm; row-gap: 5mm; justify-content: center; align-content: start; padding-top: 15mm; }
+            .exam-card { visibility: visible; margin: 0; border: 1px solid #000; width: 6cm; height: 4cm; page-break-inside: avoid; break-inside: avoid; background-image: none !important; box-shadow: none !important; }
             button, input, textarea, select, .no-print, #global-dropdown, #admin-sidebar, header { display: none !important; }
         }
     </style>
@@ -203,27 +167,9 @@
                 <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
                 <div class="text-center mb-8"><h2 class="text-3xl font-extrabold text-slate-800 mb-1">Login Peserta</h2><p class="text-slate-400 text-sm">Silakan masuk untuk memulai ujian</p></div>
                 <div class="space-y-5">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 pl-1">Username</label>
-                        <div class="relative group">
-                            <i data-feather="user" class="absolute left-4 top-3.5 w-5 h-5 text-slate-300 group-focus-within:text-blue-600 transition"></i>
-                            <input type="text" id="login-username" class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all font-semibold text-slate-700" placeholder="Username Peserta">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 pl-1">Password</label>
-                        <div class="relative group">
-                            <i data-feather="lock" class="absolute left-4 top-3.5 w-5 h-5 text-slate-300 group-focus-within:text-blue-600 transition"></i>
-                            <input type="password" id="login-password" class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all font-semibold text-slate-700" placeholder="Password">
-                        </div>
-                    </div>
-                    <div id="token-input-group">
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 pl-1">Token Soal</label>
-                        <div class="relative group">
-                            <i data-feather="key" class="absolute left-4 top-3.5 w-5 h-5 text-slate-300 group-focus-within:text-blue-600 transition"></i>
-                            <input type="text" id="input-token" class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all font-bold text-blue-600 text-center tracking-[0.2em] uppercase" placeholder="TOKEN">
-                        </div>
-                    </div>
+                    <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 pl-1">Username</label><div class="relative group"><i data-feather="user" class="absolute left-4 top-3.5 w-5 h-5 text-slate-300 group-focus-within:text-blue-600 transition"></i><input type="text" id="login-username" class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all font-semibold text-slate-700" placeholder="Username Peserta"></div></div>
+                    <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 pl-1">Password</label><div class="relative group"><i data-feather="lock" class="absolute left-4 top-3.5 w-5 h-5 text-slate-300 group-focus-within:text-blue-600 transition"></i><input type="password" id="login-password" class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all font-semibold text-slate-700" placeholder="Password"></div></div>
+                    <div id="token-input-group"><label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 pl-1">Token Soal</label><div class="relative group"><i data-feather="key" class="absolute left-4 top-3.5 w-5 h-5 text-slate-300 group-focus-within:text-blue-600 transition"></i><input type="text" id="input-token" class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all font-bold text-blue-600 text-center tracking-[0.2em] uppercase" placeholder="TOKEN"></div></div>
                 </div>
                 <div id="input-error" class="mt-4 hidden bg-red-50 border border-red-100 text-red-600 text-xs font-bold p-3 rounded-xl flex items-center animate-pulse"><i data-feather="alert-circle" class="w-4 h-4 mr-2 shrink-0"></i> <span id="error-text">Error</span></div>
                 <button onclick="startQuiz()" class="w-full mt-8 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-200 transition transform active:scale-[0.98] flex justify-center items-center gap-2 text-sm">Mulai Mengerjakan <i data-feather="arrow-right" class="w-4 h-4"></i></button>
@@ -303,12 +249,15 @@
                                     <button onclick="generateNewToken()" class="mt-6 w-full bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold py-3 rounded-xl shadow-lg shadow-emerald-100 flex items-center justify-center gap-2"><i data-feather="refresh-cw" class="w-4 h-4"></i> Perbaharui Token</button>
                                 </div>
                             </div>
+
+                            <!-- Row 2: Stat Cards -->
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                 <div class="dash-stat-card"><p class="text-3xl font-bold text-slate-700">954</p><p class="text-xs text-slate-400 mt-1">Total Koneksi</p><div class="text-xs text-emerald-500 font-bold mt-2 flex items-center gap-1"><div class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div> 1 terhubung</div></div>
                                 <div class="dash-stat-card"><p class="text-3xl font-bold text-slate-700" id="stat-total-students">0</p><p class="text-xs text-slate-400 mt-1">Total Peserta</p><div class="text-xs text-emerald-500 font-bold mt-2 flex items-center gap-1"><div class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div> Online</div></div>
                                 <div class="dash-stat-card"><p class="text-3xl font-bold text-slate-700">1</p><p class="text-xs text-slate-400 mt-1">Total Pengawas</p><div class="text-xs text-emerald-500 font-bold mt-2 flex items-center gap-1"><div class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div> Online</div></div>
                                 <div class="dash-stat-card"><p class="text-3xl font-bold text-slate-700">4</p><p class="text-xs text-slate-400 mt-1">Total Pengelola</p><div class="text-xs text-emerald-500 font-bold mt-2 flex items-center gap-1"><div class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div> Online</div></div>
                             </div>
+
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div class="dash-stat-card"><p class="text-2xl font-bold text-slate-700" id="stat-total-classes">0</p><p class="text-xs text-slate-400">Total Kelas</p></div>
                                 <div class="dash-stat-card"><p class="text-2xl font-bold text-slate-700" id="stat-total-majors">0</p><p class="text-xs text-slate-400">Total Jurusan</p></div>
@@ -464,40 +413,23 @@
                             </div>
                         </div>
 
-                        <!-- PANEL: LIST OF EXAMS (NEW - Feature 1) -->
+                        <!-- PANEL: LIST OF EXAMS (NEW) -->
                         <div id="admin-panel-questions" class="admin-panel hidden-view">
                             <div class="bg-white p-6 rounded-xl border border-slate-200 h-full flex flex-col shadow-sm">
                                 <div class="flex justify-between items-center mb-6">
                                     <div><h3 class="font-bold text-xl text-slate-800">Daftar Ujian (Bank Soal)</h3></div>
                                     <div class="flex gap-2">
-                                        <!-- Feature 2: New Buttons -->
                                         <button onclick="downloadTemplateWord()" class="border px-4 py-2 rounded-lg text-xs font-bold hover:bg-slate-50 flex items-center gap-1"><i data-feather="file-text" class="w-3 h-3"></i> Template Word</button>
                                         <button class="bg-green-600 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-1 hover:bg-green-700"><i data-feather="download" class="w-3 h-3"></i> Import Soal</button>
                                         <button class="bg-orange-500 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-1 hover:bg-orange-600"><i data-feather="upload" class="w-3 h-3"></i> Export</button>
                                         <button onclick="openAddSubject()" class="bg-slate-800 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-1 hover:bg-slate-900"><i data-feather="plus" class="w-3 h-3"></i> Tambah Ujian</button>
                                     </div>
                                 </div>
-                                
-                                <div class="flex-grow flex flex-col gap-4 overflow-hidden" id="exam-list-container">
-                                    <!-- List of Exams will be rendered here -->
-                                    <!-- Example Item Structure -->
-                                    <!-- 
-                                    <div class="bg-slate-50 border rounded-xl p-4 flex justify-between items-center">
-                                        <div>
-                                            <h4 class="font-bold text-lg text-slate-700">BAHASA INDONESIA</h4>
-                                            <p class="text-xs text-slate-500">Token: BIND123 • 50 Soal • Kelas X</p>
-                                        </div>
-                                        <div class="flex gap-2">
-                                            <button class="px-3 py-1.5 bg-blue-100 text-blue-600 text-xs font-bold rounded hover:bg-blue-200">Edit Soal</button>
-                                            <button class="px-3 py-1.5 bg-slate-200 text-slate-600 text-xs font-bold rounded hover:bg-slate-300">Edit Peserta</button>
-                                            <button class="px-3 py-1.5 bg-slate-200 text-slate-600 text-xs font-bold rounded hover:bg-slate-300">Edit Ruang</button>
-                                            <button class="px-3 py-1.5 bg-red-100 text-red-600 text-xs font-bold rounded hover:bg-red-200">Hapus</button>
-                                        </div>
-                                    </div> 
-                                    -->
+                                <div class="flex-grow flex flex-col gap-4 overflow-hidden overflow-y-auto p-2 custom-scrollbar" id="exam-list-container">
+                                    <!-- EXAM ITEMS WILL BE RENDERED HERE -->
                                 </div>
                                 
-                                <!-- Hidden Detail View for specific exam questions -->
+                                <!-- Hidden Detail View -->
                                 <div id="exam-detail-view" class="hidden h-full flex flex-col">
                                      <div class="flex items-center gap-3 mb-4 pb-2 border-b">
                                          <button onclick="closeExamDetail()" class="p-1 hover:bg-slate-100 rounded"><i data-feather="arrow-left"></i></button>
@@ -598,8 +530,6 @@
                             </div>
                         </div>
                         
-                        <!-- OTHER PANELS (QUESTIONS) -->
-                        <div id="admin-panel-questions" class="admin-panel hidden-view">...</div>
                     </div>
                 </div>
             </div>
@@ -687,6 +617,9 @@
         function toggleAllCheckboxes(source) {
             const checkboxes = document.querySelectorAll('.student-checkbox');
             checkboxes.forEach(checkbox => checkbox.checked = source.checked);
+            if(!document.getElementById('view-admin-student-card').classList.contains('hidden-view')){
+                renderCardPreview();
+            }
         }
 
         // Action Handlers for Dropdown items
@@ -1093,6 +1026,3 @@
     </script>
 </body>
 </html>
-
-
-
