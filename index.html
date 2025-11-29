@@ -317,6 +317,7 @@
                                     <div class="flex gap-2">
                                         <button onclick="showAddStudent()" class="p-2 bg-slate-100 rounded hover:bg-slate-200 border border-slate-300 text-slate-600"><i data-feather="plus" class="w-4 h-4"></i></button>
                                         <button onclick="alert('Import feature placeholder')" class="p-2 bg-slate-100 rounded hover:bg-slate-200 border border-slate-300 text-slate-600"><i data-feather="upload" class="w-4 h-4"></i></button>
+                                        <button onclick="downloadStudentTemplateWord()" class="p-2 bg-slate-100 rounded hover:bg-slate-200 border border-slate-300 text-slate-600" title="Download Template Word"><i data-feather="file" class="w-4 h-4"></i></button>
                                         <button onclick="downloadExcel()" class="p-2 bg-slate-100 rounded hover:bg-slate-200 border border-slate-300 text-slate-600"><i data-feather="download" class="w-4 h-4"></i></button>
                                         <button onclick="showStudentCard()" class="p-2 bg-slate-100 rounded hover:bg-slate-200 border border-slate-300 text-slate-600"><i data-feather="credit-card" class="w-4 h-4"></i></button>
                                     </div>
@@ -535,9 +536,9 @@
             const rect = btn.getBoundingClientRect();
             const dropdown = document.getElementById('global-dropdown');
             
-            // Position near button
-            dropdown.style.top = (rect.bottom + window.scrollY + 5) + 'px';
-            dropdown.style.left = (rect.left + window.scrollX) + 'px';
+            // Position near button (Fixed position relative to viewport)
+            dropdown.style.top = (rect.bottom) + 'px'; // Removed scrollY because it's fixed
+            dropdown.style.left = (rect.left) + 'px';
             dropdown.style.display = 'block';
         }
 
@@ -637,6 +638,54 @@
 
             document.querySelectorAll('.admin-panel').forEach(e => e.classList.add('hidden-view'));
             document.getElementById('view-admin-add-student').classList.remove('hidden-view');
+        }
+
+        function downloadStudentTemplateWord() {
+            const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Template Peserta</title></head><body>";
+            const footer = "</body></html>";
+            const html = `
+                <h2 style="text-align:center">TEMPLATE DATA PESERTA UJIAN</h2>
+                <p>Silakan isi data peserta pada tabel di bawah ini. Jangan ubah judul kolom.</p>
+                <table border="1" style="width:100%; border-collapse:collapse;">
+                    <thead>
+                        <tr style="background-color:#eee;">
+                            <th>No</th>
+                            <th>Username*</th>
+                            <th>Password*</th>
+                            <th>Nama Lengkap*</th>
+                            <th>ID Peserta (NISN)*</th>
+                            <th>Kelas/Jurusan*</th>
+                            <th>Ruangan</th>
+                            <th>Sesi</th>
+                            <th>Sekolah</th>
+                            <th>Agama</th>
+                            <th>Catatan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>USER001</td>
+                            <td>12345</td>
+                            <td>Siswa Contoh 1</td>
+                            <td>00123456</td>
+                            <td>X MIPA 1</td>
+                            <td>R.1</td>
+                            <td>1</td>
+                            <td>SMA NEGERI</td>
+                            <td>Islam</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+            const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(header + html + footer);
+            const element = document.createElement('a');
+            element.setAttribute('href', source);
+            element.setAttribute('download', 'Template_Data_Peserta.doc');
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
         }
 
         // --- RENDER TABLES (Updated for Global Dropdown) ---
