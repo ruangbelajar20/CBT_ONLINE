@@ -7,11 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/feather-icons"></script>
-    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
-    <!-- TinyMCE Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js" referrerpolicy="origin"></script>
-
-    <style>
+    <script src="https://cdn.tiny.cloud/1/9z14k6t62t6o0y47e90lljhixhkauppy9wuvw4fzp964g856/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    
+       <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #2563eb; }
         
         /* Glassmorphism & Utils */
@@ -411,7 +409,9 @@
                 menubar: 'edit view insert format table',
                 plugins: 'link image code table lists',
                 toolbar: 'fullscreen | fontfamily fontsize | bold italic underline strikethrough | alignleft aligncenter alignright | bullist numlist | link image | table',
-                dropdown_container_body: true // helps with modal z-index
+                dropdown_container_body: true,
+                promotion: false, // Hide upgrade button
+                branding: false   // Hide branding
             });
         }
         init();
